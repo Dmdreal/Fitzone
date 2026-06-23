@@ -8,13 +8,10 @@ class Product extends Model
 {
     protected $fillable = ['name', 'category', 'price', 'stock_quantity', 'low_stock_threshold', 'is_active'];
 
-    protected function casts(): array
-    {
-        return [
+        protected $casts = [
             'price' => 'decimal:2',
             'is_active' => 'boolean',
         ];
-    }
 
     public function inventoryLogs()
     {

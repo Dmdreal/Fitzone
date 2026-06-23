@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Café Staff', 'email' => 'cafe@fitzone.test', 'role' => 'cafe'],
             ['name' => 'Rahul Trainer', 'email' => 'trainer@fitzone.test', 'role' => 'trainer'],
             ['name' => 'Sonia Wellness', 'email' => 'sonia@fitzone.test', 'role' => 'trainer'],
+            ['name' => 'Grace Gym Owner', 'email' => 'gymowner@fitzone.test', 'role' => 'gym_owner'],
             ['name' => 'Amit Verma', 'email' => 'member@fitzone.test', 'role' => 'member'],
             ['name' => 'Priya Singh', 'email' => 'priya@fitzone.test', 'role' => 'member'],
             ['name' => 'Kevin Otieno', 'email' => 'kevin@fitzone.test', 'role' => 'member'],
@@ -44,7 +45,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($users as $user) {
-            $password = in_array($user['role'], ['admin', 'trainer', 'cafe'], true)
+            $password = in_array($user['role'], ['admin', 'trainer', 'cafe', 'gym_owner'], true)
                 ? '123456789'
                 : 'password';
 
@@ -106,6 +107,7 @@ class DatabaseSeeder extends Seeder
 
         $rahul = User::where('email', 'trainer@fitzone.test')->first();
         $sonia = User::where('email', 'sonia@fitzone.test')->first();
+        $gymOwner = User::where('email', 'gymowner@fitzone.test')->first();
         $amit = User::where('email', 'member@fitzone.test')->first();
         $priya = User::where('email', 'priya@fitzone.test')->first();
         $kevin = User::where('email', 'kevin@fitzone.test')->first();
@@ -120,10 +122,33 @@ class DatabaseSeeder extends Seeder
             ['specialty' => 'Strength and hypertrophy', 'category' => 'strength', 'rating' => 4.80, 'experience_years' => 7, 'bio' => 'Builds practical programs for muscle gain and injury-safe lifting.']
         );
 
+        $rahul->update([
+            'location' => 'Westlands',
+            'nearby_locations' => 'Parklands, Kangemi, Lavington',
+            'headline' => 'Strength trainer in Westlands',
+        ]);
+
         TrainerProfile::updateOrCreate(
             ['user_id' => $sonia->id],
             ['specialty' => 'Yoga and wellness', 'category' => 'wellness', 'rating' => 4.90, 'experience_years' => 5, 'bio' => 'Focuses on mobility, recovery, weight loss, and sustainable habits.']
         );
+
+        $sonia->update([
+            'location' => 'Kilimani',
+            'nearby_locations' => 'Yaya Centre, Lavington, Hurlingham',
+            'headline' => 'Wellness and mobility coach',
+        ]);
+
+        $gymOwner->update([
+            'phone' => '+254700000000',
+            'headline' => 'Full-service smart gym',
+            'bio' => 'A gym owner account for managing discovery, services, verification, and client growth.',
+            'location' => 'Nairobi CBD',
+            'nearby_locations' => 'Upper Hill, Ngara, Westlands',
+            'gym_name' => 'Fitzone Central Gym',
+            'gym_services' => 'Personal training, group classes, boxing, sauna, cafe, membership packages',
+            'verification_status' => 'verified',
+        ]);
 
         $membership = Membership::updateOrCreate(
             ['member_id' => $amit->id, 'membership_package_id' => $monthly->id],

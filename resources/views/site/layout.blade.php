@@ -86,12 +86,27 @@
         .contact-card textarea { min-height: 130px; resize: vertical; }
         label { display: grid; gap: 7px; font-size: 12px; font-weight: 900; color: #334155; }
         .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-        .footer { padding: 36px 0; color: #cbd5e1; background: #0e1d31; border-top: 1px solid rgba(226,232,240,.1); }
-        .footer-inner { width: min(1180px, calc(100% - 32px)); margin: 0 auto; display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
-        .footer-section { min-width: 180px; }
-        .footer-section h3 { color: #fff; font-weight: 950; margin-bottom: 12px; }
-        .footer-section a { display: block; font-size: 13px; color: #cbd5e1; margin: 6px 0; transition: color 0.2s; }
+        .footer { padding: 56px 0 32px; color: #cbd5e1; background: #08152f; border-top: 1px solid rgba(255,255,255,.06); }
+        .footer-inner { width: min(1180px, calc(100% - 48px)); margin: 0 auto; display: grid; grid-template-columns: minmax(240px, 320px) repeat(3, minmax(180px, 1fr)); gap: 28px; padding-bottom: 28px; }
+        .footer-brand { display: grid; gap: 18px; }
+        .footer-brand p { max-width: 280px; line-height: 1.8; color: #d1d9ea; }
+        .footer-social { display: flex; gap: 10px; }
+        .footer-social a { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.06); color: #fff; text-decoration: none; font-weight: 700; transition: background .2s; }
+        .footer-social a:hover { background: rgba(255,255,255,.14); }
+        .footer-section { display: grid; gap: 12px; }
+        .footer-section h3 { color: #fff; font-weight: 950; margin: 0; font-size: 14px; }
+        .footer-section p, .footer-section a { font-size: 14px; line-height: 1.8; color: #cbd5e1; }
+        .footer-section a { text-decoration: none; transition: color .2s; }
         .footer-section a:hover { color: #fff; }
+        .footer-section .link-item { display: flex; align-items: center; gap: 10px; position: relative; }
+        .footer-section .link-item::before { content: '›'; color: #3b82f6; font-size: 12px; }
+        .footer-bottom { width: min(1180px, calc(100% - 48px)); margin: 0 auto; display: grid; grid-template-columns: minmax(240px, 1fr) minmax(280px, 1fr) minmax(220px, 1fr); gap: 24px; align-items: center; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.08); font-size: 13px; }
+        .footer-badge { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: rgba(59,130,246,.12); color: #93c5fd; font-weight: 800; }
+        .footer-bottom-claim { display: grid; gap: 6px; }
+        .footer-bottom-claim strong { color: #fff; font-weight: 700; }
+        .footer-payments { display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap; }
+        .payment-card { border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 10px 16px; background: rgba(255,255,255,.03); color: #fff; font-size: 13px; font-weight: 700; letter-spacing: .4px; }
+        .footer-copyright { text-align: center; color: #94a3b8; }
         .cta-banner { background: linear-gradient(135deg, #132942, #236fe8); color: #fff; border-radius: 12px; padding: 40px; text-align: center; margin: 40px 0; }
         .cta-banner h2 { margin: 0 0 12px; font-size: 32px; }
         .cta-banner p { max-width: 600px; margin: 0 auto 20px; opacity: 0.95; }
@@ -133,30 +148,49 @@
 
     <footer class="footer">
         <div class="footer-inner">
-            <div class="footer-section">
-                <h3>Fitzone</h3>
-                <p style="font-size:13px">Smart gym management for training, payments, attendance, and member engagement.</p>
+            <div class="footer-brand">
+                <a class="brand" href="{{ route('site.home') }}"><span class="brand-mark">F</span><span>Fitzone<br><small>Smart Gym</small></span></a>
+                <p>Smart gym management for training, payments, attendance, and member engagement.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Facebook">f</a>
+                    <a href="#" aria-label="Instagram">i</a>
+                    <a href="#" aria-label="Twitter">t</a>
+                    <a href="#" aria-label="LinkedIn">l</a>
+                </div>
             </div>
             <div class="footer-section">
                 <h3>Quick Links</h3>
-                <a href="{{ route('site.home') }}">Home</a>
-                <a href="{{ route('site.services') }}">Services</a>
-                <a href="{{ route('site.memberships') }}">Memberships</a>
-                <a href="{{ route('site.trainers') }}">Trainers</a>
+                <a class="link-item" href="{{ route('site.home') }}">Home</a>
+                <a class="link-item" href="{{ route('site.services') }}">Services</a>
+                <a class="link-item" href="{{ route('site.memberships') }}">Memberships</a>
+                <a class="link-item" href="{{ route('site.trainers') }}">Trainers</a>
             </div>
             <div class="footer-section">
                 <h3>Support</h3>
-                <a href="{{ route('site.about') }}">About</a>
-                <a href="{{ route('site.contact') }}">Contact</a>
-                <a href="mailto:fitzone@gmail.com">Email Us</a>
+                <a class="link-item" href="{{ route('site.about') }}">About</a>
+                <a class="link-item" href="{{ route('site.contact') }}">Contact</a>
+                <a class="link-item" href="mailto:fitzone@gmail.com">Email Us</a>
+                <a class="link-item" href="#">FAQs</a>
             </div>
             <div class="footer-section">
                 <h3>Contact</h3>
-                <p style="font-size:13px">+254746899732<br>Fitzone@gmail.com</p>
+                <p>+254746899732<br>Fitzone@gmail.com<br>123 Fitness Street, Nairobi, Kenya</p>
             </div>
         </div>
-        <div style="width: min(1180px, calc(100% - 32px)); margin: 24px auto 0; padding-top: 24px; border-top: 1px solid rgba(226,232,240,.1); text-align: center; font-size: 12px;">
-            <p>&copy; 2026 Fitzone Gym. All rights reserved. | Smart gym platform built for modern fitness clubs.</p>
+        <div class="footer-bottom">
+            <div class="footer-bottom-claim">
+                <div class="footer-badge">✓</div>
+                <div>
+                    <strong>Your data is safe with us.</strong>
+                    <p>We value your privacy and security.</p>
+                </div>
+            </div>
+            <p class="footer-copyright">&copy; 2026 Fitzone Gym. All rights reserved. | Smart gym platform built for modern fitness clubs.</p>
+            <div class="footer-payments">
+                <span class="payment-card">VISA</span>
+                <span class="payment-card">Mastercard</span>
+                <span class="payment-card">M-PESA</span>
+            </div>
         </div>
     </footer>
 </body>

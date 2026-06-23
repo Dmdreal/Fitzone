@@ -20,15 +20,12 @@ class MembershipPackage extends Model
         'is_active',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'benefits' => 'array',
-            'trainer_access' => 'boolean',
-            'is_active' => 'boolean',
-            'price' => 'decimal:2',
-        ];
-    }
+    protected $casts = [
+        'benefits' => 'array',
+        'trainer_access' => 'boolean',
+        'is_active' => 'boolean',
+        'price' => 'decimal:2',
+    ];
 
     public function memberships()
     {

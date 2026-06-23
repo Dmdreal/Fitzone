@@ -73,6 +73,10 @@ class AdminController extends Controller
             'experience_years' => ['required', 'integer', 'min:0', 'max:60'],
             'rating' => ['nullable', 'numeric', 'min:1', 'max:5'],
             'bio' => ['nullable', 'string', 'max:1000'],
+            'county_id' => ['nullable', 'exists:counties,id'],
+            'town' => ['nullable', 'string', 'max:120'],
+            'latitude' => ['nullable', 'numeric'],
+            'longitude' => ['nullable', 'numeric'],
         ]);
 
         $trainer = User::create([
@@ -90,6 +94,10 @@ class AdminController extends Controller
             'experience_years' => $data['experience_years'],
             'rating' => $data['rating'] ?? 5,
             'bio' => $data['bio'] ?? null,
+            'county_id' => $data['county_id'] ?? null,
+            'town' => $data['town'] ?? null,
+            'latitude' => $data['latitude'] ?? null,
+            'longitude' => $data['longitude'] ?? null,
         ]);
 
         return back()->with('status', 'Trainer added successfully.');
@@ -207,5 +215,6 @@ class AdminController extends Controller
         ]);
 
         return redirect()->route('admin.chats', ['chat' => $chat->id]);
+        }
+
     }
-}

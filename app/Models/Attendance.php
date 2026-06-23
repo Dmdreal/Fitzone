@@ -16,12 +16,9 @@ class Attendance extends Model
         'qr_code',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'attendance_date' => 'date',
-        ];
-    }
+    protected $casts = [
+        'attendance_date' => 'date',
+    ];
 
     public function member()
     {

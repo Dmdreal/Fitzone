@@ -22,6 +22,17 @@
                 <label>Specialty <input name="specialty" value="{{ old('specialty') }}" required></label>
                 <label>Category <input name="category" value="{{ old('category', 'strength') }}" required></label>
                 <label>Experience Years <input type="number" name="experience_years" value="{{ old('experience_years', 1) }}" min="0" max="60" required></label>
+                <label>County
+                    <select name="county_id">
+                        <option value="">Select county</option>
+                        @foreach(\App\Models\County::orderBy('name')->get() as $county)
+                            <option value="{{ $county->id }}" {{ old('county_id') == $county->id ? 'selected' : '' }}>{{ $county->display_name }}</option>
+                        @endforeach
+                    </select>
+                </label>
+                <label>Town <input name="town" value="{{ old('town') }}"></label>
+                <label>Latitude <input name="latitude" value="{{ old('latitude') }}"></label>
+                <label>Longitude <input name="longitude" value="{{ old('longitude') }}"></label>
                 <label>Rating <input type="number" name="rating" value="{{ old('rating', 5) }}" min="1" max="5" step="0.1"></label>
             </div>
             <label style="margin-top:12px">Bio <textarea name="bio">{{ old('bio') }}</textarea></label>

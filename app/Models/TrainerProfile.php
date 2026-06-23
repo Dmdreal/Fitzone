@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\MembershipPackage;
 use Illuminate\Database\Eloquent\Model;
 
 class TrainerProfile extends Model
@@ -14,17 +15,33 @@ class TrainerProfile extends Model
         'experience_years',
         'bio',
         'photo_path',
+        'preferred_package_id',
+        'preferred_rate',
+        'county_id',
+        'town',
+        'latitude',
+        'longitude',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'rating' => 'decimal:2',
-        ];
-    }
+    protected $casts = [
+        'rating' => 'decimal:2',
+        'preferred_rate' => 'decimal:2',
+        'latitude' => 'float',
+        'longitude' => 'float',
+    ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function county()
+    {
+        return $this->belongsTo(County::class, 'county_id');
+    }
+
+    public function preferredPackage()
+    {
+        return $this->belongsTo(MembershipPackage::class, 'preferred_package_id');
     }
 }

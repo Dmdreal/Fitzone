@@ -7,7 +7,9 @@ use App\Models\Membership;
 use App\Models\MembershipPackage;
 use App\Models\Payment;
 use App\Models\TrainerProfile;
+use App\Models\User;
 use App\Models\WorkoutPlan;
+use App\Services\PaymentDistributionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +23,8 @@ class PaymentApprovalController extends Controller
         $data = $request->validate([
             'package_id' => ['required', 'exists:membership_packages,id'],
             'trainer_id' => ['nullable', 'exists:trainer_profiles,id'],
+            'gym_id' => ['nullable', 'exists:users,id'],
+            'amount' => ['nullable', 'numeric', 'min:1'],
             'method' => ['required', 'in:paypal,card,bank,cash'],
             'paypal_email' => ['nullable', 'email', 'max:255'],
             'paypal_transaction_id' => ['nullable', 'string', 'max:100'],
@@ -49,6 +53,15 @@ class PaymentApprovalController extends Controller
 
         $package = MembershipPackage::findOrFail($data['package_id']);
         $trainerProfile = isset($data['trainer_id']) ? TrainerProfile::find($data['trainer_id']) : null;
+        $gymOwner = isset($data['gym_id']) ? User::where('role', 'gym_owner')->find($data['gym_id']) : null;
+        $amount = $data['amount'] ?? $package->price;
+
+        if ($trainerProfile) {
+            $amount = $trainerProfile->preferred_rate ?? $amount;
+        } elseif ($gymOwner) {
+            $amount = $gymOwner->preferred_rate ?? $amount;
+        }
+
         $startsAt = now();
         $endsAt = match ($package->duration_unit) {
             'day' => $startsAt->copy()->addDays($package->duration_count),
@@ -57,11 +70,12 @@ class PaymentApprovalController extends Controller
             'year' => $startsAt->copy()->addYears($package->duration_count),
         };
 
-        DB::transaction(function () use ($data, $package, $trainerProfile, $startsAt, $endsAt) {
+        DB::transaction(function () use ($data, $package, $trainerProfile, $gymOwner, $startsAt, $endsAt, $amount) {
             $membership = Membership::create([
                 'member_id' => Auth::id(),
                 'membership_package_id' => $package->id,
                 'trainer_id' => $trainerProfile?->user_id,
+                'gym_owner_id' => $gymOwner?->id,
                 'starts_at' => $startsAt->toDateString(),
                 'ends_at' => $endsAt->toDateString(),
                 'status' => 'pending',
@@ -70,8 +84,10 @@ class PaymentApprovalController extends Controller
             Payment::create([
                 'member_id' => Auth::id(),
                 'membership_id' => $membership->id,
+                'trainer_id' => $trainerProfile?->user_id,
+                'gym_owner_id' => $gymOwner?->id,
                 'phone' => Auth::user()->phone,
-                'amount' => $package->price,
+                'amount' => $amount,
                 'method' => $data['method'],
                 'status' => 'pending',
                 'reference' => 'FITZONE-PENDING-'.now()->format('YmdHis').'-'.Auth::id(),
@@ -123,6 +139,8 @@ class PaymentApprovalController extends Controller
             if ($payment->membership) {
                 $this->createActivationBenefits($payment->membership->fresh(['package']));
             }
+
+            (new PaymentDistributionService())->distribute($payment);
         });
 
         return back()->with('status', 'Payment approved and membership activated.');

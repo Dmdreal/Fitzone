@@ -8,10 +8,7 @@ class Wallet extends Model
 {
     protected $fillable = ['member_id', 'balance'];
 
-    protected function casts(): array
-    {
-        return ['balance' => 'decimal:2'];
-    }
+    protected $casts = ['balance' => 'decimal:2'];
 
     public function member()
     {

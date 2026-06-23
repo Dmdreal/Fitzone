@@ -5,6 +5,7 @@
         'admin' => route('admin.dashboard'),
         'trainer' => route('trainer.dashboard'),
         'cafe' => route('cafe.dashboard'),
+        'gym_owner' => route('gym-owner.dashboard'),
         default => route('client.dashboard'),
     };
     $nav = match ($role) {
@@ -31,11 +32,16 @@
             ['Café Orders', route('cafe.dashboard'), 'POS'],
             ['Profile', route('profile.edit'), 'Me'],
         ],
+        'gym_owner' => [
+            ['Dashboard', route('gym-owner.dashboard'), 'D'],
+            ['Profile', route('profile.edit'), 'Me'],
+        ],
         default => [
             ['Dashboard', route('client.dashboard'), 'D'],
             ['Today', route('client.today'), 'TD'],
             ['Choose Package', route('client.packages'), 'P'],
             ['Select Trainer', route('client.trainers'), 'T'],
+            ['Find Gyms', route('client.gyms'), 'G'],
             ['Workout Plan', route('client.workout'), 'W'],
             ['Diet Plan', route('client.diet'), 'N'],
             ['Attendance', route('client.attendance'), 'A'],
@@ -53,6 +59,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Fitzone')</title>
     <style>
         :root {
@@ -75,9 +82,9 @@
         a { color: inherit; text-decoration: none; }
         img, svg, video, canvas, audio { max-width: 100%; }
         .shell { min-height: 100vh; display: grid; grid-template-columns: 230px minmax(0, 1fr); }
-        .menu-toggle { display: none; border: 0; width: 42px; height: 42px; border-radius: 8px; background: #fff; color: var(--ink); cursor: pointer; box-shadow: 0 8px 22px rgba(15, 23, 42, .08); }
+        .menu-toggle { display: none; border: 0; width: 42px; height: 42px; border-radius: 8px; background: #fff; color: var(--ink); cursor: pointer; box-shadow: 0 8px 22px rgba(15, 23, 42, .08); position: relative; z-index: 30; }
         .menu-toggle span { display: block; width: 20px; height: 2px; margin: 5px auto; border-radius: 999px; background: currentColor; }
-        .sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, .46); z-index: 18; }
+        .sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, .46); z-index: 18; pointer-events: none; }
         .sidebar { background: linear-gradient(180deg, #162943, #0e1d31); color: #dbeafe; padding: 24px 18px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
         .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; color: #fff; font-weight: 900; line-height: 1.1; }
         .brand span:last-child { min-width: 0; }
@@ -178,9 +185,10 @@
         @media (max-width: 1100px) {
             .shell { grid-template-columns: minmax(0, 1fr); }
             .menu-toggle { display: inline-block; }
-            .sidebar { position: fixed; inset: 0 auto 0 0; width: min(280px, 86vw); height: 100vh; z-index: 20; transform: translateX(-100%); transition: transform .2s ease; }
+            .sidebar { position: fixed; inset: 0 auto 0 0; width: min(280px, 86vw); height: 100vh; z-index: 20; transform: translateX(-100%); transition: transform .2s ease; will-change: transform; }
+            body.menu-open { overflow: hidden; }
             body.menu-open .sidebar { transform: translateX(0); }
-            body.menu-open .sidebar-backdrop { display: block; }
+            body.menu-open .sidebar-backdrop { display: block; pointer-events: auto; }
             .two { grid-template-columns: minmax(0, 1fr); }
             .chat-shell { grid-template-columns: minmax(0, 1fr); }
             .chat-room { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
@@ -268,27 +276,34 @@
         </main>
     </div>
     <script>
-        const menuButton = document.querySelector('[data-menu-toggle]');
-        const closeTargets = document.querySelectorAll('[data-close-menu], .nav-link');
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuButton = document.querySelector('[data-menu-toggle]');
+            const closeTargets = document.querySelectorAll('[data-close-menu], .nav-link');
 
-        function setMenu(open) {
-            document.body.classList.toggle('menu-open', open);
-            menuButton?.setAttribute('aria-expanded', open ? 'true' : 'false');
-        }
-
-        menuButton?.addEventListener('click', () => {
-            setMenu(!document.body.classList.contains('menu-open'));
-        });
-
-        closeTargets.forEach((target) => {
-            target.addEventListener('click', () => setMenu(false));
-        });
-
-        window.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                setMenu(false);
+            if (!menuButton) {
+                return;
             }
+
+            function setMenu(open) {
+                document.body.classList.toggle('menu-open', open);
+                menuButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+            }
+
+            menuButton.addEventListener('click', () => {
+                setMenu(!document.body.classList.contains('menu-open'));
+            });
+
+            closeTargets.forEach((target) => {
+                target.addEventListener('click', () => setMenu(false));
+            });
+
+            window.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    setMenu(false);
+                }
+            });
         });
     </script>
+    @stack('scripts')
 </body>
 </html>

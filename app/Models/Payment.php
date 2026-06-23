@@ -9,12 +9,15 @@ class Payment extends Model
     protected $fillable = [
         'member_id',
         'membership_id',
+        'trainer_id',
+        'gym_owner_id',
         'phone',
         'receipt',
         'amount',
         'method',
         'status',
         'reference',
+        'transaction_code',
         'paid_at',
         'notes',
         'mpesa_checkout_request_id',
@@ -22,18 +25,25 @@ class Payment extends Model
         'mpesa_response',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'amount' => 'decimal:2',
-            'paid_at' => 'datetime',
-            'mpesa_response' => 'array',
-        ];
-    }
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'paid_at' => 'datetime',
+        'mpesa_response' => 'array',
+    ];
 
     public function member()
     {
         return $this->belongsTo(User::class, 'member_id');
+    }
+
+    public function trainer()
+    {
+        return $this->belongsTo(User::class, 'trainer_id');
+    }
+
+    public function gymOwner()
+    {
+        return $this->belongsTo(User::class, 'gym_owner_id');
     }
 
     public function membership()

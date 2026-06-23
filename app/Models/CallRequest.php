@@ -20,15 +20,12 @@ class CallRequest extends Model
         'ended_at',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'caller_ice' => 'array',
-            'trainer_ice' => 'array',
-            'accepted_at' => 'datetime',
-            'ended_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'caller_ice' => 'array',
+        'trainer_ice' => 'array',
+        'accepted_at' => 'datetime',
+        'ended_at' => 'datetime',
+    ];
 
     public function caller()
     {

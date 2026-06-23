@@ -57,3 +57,15 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Google Maps API
+
+This app can use the Google Maps Geocoding API to translate county names to coordinates and improve nearby searches.
+
+- Add your API key to `.env` as `GOOGLE_MAPS_API_KEY`.
+- Enable the **Geocoding API** (and **Places API** if you plan to extend searches) in the Google Cloud Console.
+- If the key is missing, the app uses a small built-in fallback of common county centers.
+
+Example in `.env`:
+
+GOOGLE_MAPS_API_KEY=YOUR_KEY_HERE

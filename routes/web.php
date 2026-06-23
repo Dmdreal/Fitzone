@@ -6,11 +6,13 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CallController;
 use App\Http\Controllers\CafeController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\GymOwnerController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MemberQrController;
 use App\Http\Controllers\MemberSearchController;
 use App\Http\Controllers\MpesaController;
 use App\Http\Controllers\PaymentApprovalController;
+use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TrainerController;
 use Illuminate\Http\Request;
@@ -52,6 +54,7 @@ Route::middleware('auth')->group(function () {
         return match (auth()->user()->role) {
             'admin' => redirect()->route('admin.dashboard'),
             'trainer' => redirect()->route('trainer.dashboard'),
+            'gym_owner' => redirect()->route('gym-owner.dashboard'),
             'cafe' => redirect()->route('cafe.dashboard'),
             default => redirect()->route('client.dashboard'),
         };
@@ -106,28 +109,46 @@ Route::middleware('auth')->group(function () {
     Route::post('/calls/{call}/end', [CallController::class, 'end'])->name('calls.end');
     Route::match(['get', 'post'], '/calls/{call}/signal', [CallController::class, 'signal'])->name('calls.signal');
 
-    Route::prefix('client')->name('client.')->middleware('role:member')->group(function () {
-        Route::get('/dashboard', [ClientController::class, 'dashboard'])->name('dashboard');
+    Route::prefix('client')->name('client.')->middleware('auth')->group(function () {
         Route::get('/packages', [ClientController::class, 'packages'])->name('packages');
         Route::get('/trainers', [ClientController::class, 'trainers'])->name('trainers');
         Route::get('/checkout', [ClientController::class, 'checkout'])->name('checkout');
         Route::post('/activate', [ClientController::class, 'activate'])->name('activate');
-        Route::get('/activation', [ClientController::class, 'activation'])->name('activation');
-        Route::get('/today', [ClientController::class, 'today'])->name('today');
-        Route::get('/diet', [ClientController::class, 'diet'])->name('diet');
-        Route::get('/workout-plan', [ClientController::class, 'workout'])->name('workout');
-        Route::get('/attendance', [ClientController::class, 'attendance'])->name('attendance');
-        Route::get('/payments', [ClientController::class, 'payments'])->name('payments');
-        Route::get('/wallet', [CafeController::class, 'wallet'])->name('wallet');
-        Route::post('/wallet/deposit', [CafeController::class, 'deposit'])->name('wallet.deposit');
-        Route::get('/cafe', [CafeController::class, 'shop'])->name('cafe');
-        Route::post('/cafe/orders', [CafeController::class, 'order'])->name('cafe.orders');
-        Route::get('/chat', [ClientController::class, 'chat'])->name('chat');
-        Route::post('/chat/messages', [ClientController::class, 'sendMessage'])->name('chat.messages');
-        Route::post('/calls/request', [CallController::class, 'store'])->name('calls.store');
-        Route::post('/trainer/switch', [ClientController::class, 'switchTrainer'])->name('trainer.switch');
-        Route::get('/members/{package:slug?}', [ClientController::class, 'members'])->name('members');
-        Route::post('/members/{member}/chat', [ClientController::class, 'startMemberChat'])->name('members.chat');
+        Route::post('/bookings', [ClientController::class, 'storeBooking'])->name('bookings.store');
+        Route::post('/reviews', [ClientController::class, 'storeReview'])->name('reviews.store');
+        Route::post('/complaints', [ClientController::class, 'storeComplaint'])->name('complaints.store');
+
+        Route::post('/recommend-trainers', [RecommendationController::class, 'recommend'])->name('recommend.trainers');
+
+        Route::middleware('role:member')->group(function () {
+            // Location selection after registration
+            Route::get('/location/select', [\App\Http\Controllers\LocationController::class, 'showSelectionForm'])->name('location.select');
+            Route::post('/location/nearby', [\App\Http\Controllers\LocationController::class, 'findNearbyTrainers'])->name('location.nearby');
+
+            Route::get('/dashboard', [ClientController::class, 'dashboard'])->name('dashboard');
+            Route::get('/onboarding', [ClientController::class, 'onboarding'])->name('onboarding');
+            Route::get('/activation', [ClientController::class, 'activation'])->name('activation');
+            Route::get('/today', [ClientController::class, 'today'])->name('today');
+            Route::get('/diet', [ClientController::class, 'diet'])->name('diet');
+            Route::get('/workout-plan', [ClientController::class, 'workout'])->name('workout');
+            Route::get('/attendance', [ClientController::class, 'attendance'])->name('attendance');
+            Route::get('/payments', [ClientController::class, 'payments'])->name('payments');
+            Route::get('/wallet', [CafeController::class, 'wallet'])->name('wallet');
+            Route::post('/wallet/deposit', [CafeController::class, 'deposit'])->name('wallet.deposit');
+            Route::get('/cafe', [CafeController::class, 'shop'])->name('cafe');
+            Route::post('/cafe/orders', [CafeController::class, 'order'])->name('cafe.orders');
+            Route::get('/chat', [ClientController::class, 'chat'])->name('chat');
+            Route::post('/chat/messages', [ClientController::class, 'sendMessage'])->name('chat.messages');
+            Route::post('/calls/request', [CallController::class, 'store'])->name('calls.store');
+            Route::post('/trainer/switch', [ClientController::class, 'switchTrainer'])->name('trainer.switch');
+            Route::get('/gyms', [ClientController::class, 'gyms'])->name('gyms');
+            Route::get('/members/{package:slug?}', [ClientController::class, 'members'])->name('members');
+            Route::post('/members/{member}/chat', [ClientController::class, 'startMemberChat'])->name('members.chat');
+        });
+    });
+
+    Route::prefix('gym-owner')->name('gym-owner.')->middleware('role:gym_owner')->group(function () {
+        Route::get('/dashboard', [GymOwnerController::class, 'dashboard'])->name('dashboard');
     });
 
     Route::prefix('cafe')->name('cafe.')->middleware('role:cafe,admin')->group(function () {

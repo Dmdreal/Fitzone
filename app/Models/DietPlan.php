@@ -17,14 +17,11 @@ class DietPlan extends Model
         'is_active',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'meal_schedule' => 'array',
-            'meal_delivery_available' => 'boolean',
-            'is_active' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'meal_schedule' => 'array',
+        'meal_delivery_available' => 'boolean',
+        'is_active' => 'boolean',
+    ];
 
     public function member()
     {

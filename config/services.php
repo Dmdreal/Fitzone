@@ -45,7 +45,7 @@ return [
         'cafe_transaction_type' => env('MPESA_CAFE_TRANSACTION_TYPE', 'CustomerBuyGoodsOnline'),
         'env' => env('MPESA_ENV', 'sandbox'),
         'callback_url' => env('MPESA_CALLBACK_URL'),
-    ],
+    ], 
 
     'paypal' => [
         'client_id' => env('PAYPAL_CLIENT_ID'),
@@ -64,6 +64,15 @@ return [
         'account_name' => env('BANK_ACCOUNT_NAME', 'Fitzone Gym'),
         'account_number' => env('BANK_ACCOUNT_NUMBER'),
         'paybill' => env('BANK_PAYBILL'),
+    ],
+
+    'openai' => [
+        'key' => env('OPENAI_API_KEY'),
+        'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
+    ],
+
+    'google' => [
+        'maps_api_key' => env('GOOGLE_MAPS_API_KEY'),
     ],
 
 ];

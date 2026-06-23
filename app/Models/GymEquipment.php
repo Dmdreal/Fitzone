@@ -17,11 +17,8 @@ class GymEquipment extends Model
         'next_service_at',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'last_serviced_at' => 'date',
-            'next_service_at' => 'date',
-        ];
-    }
+    protected $casts = [
+        'last_serviced_at' => 'date',
+        'next_service_at' => 'date',
+    ];
 }

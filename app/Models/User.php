@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\MembershipPackage;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -21,6 +22,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'county_id',
         'role',
         'status',
         'member_number',
@@ -29,6 +31,19 @@ class User extends Authenticatable
         'phone',
         'headline',
         'bio',
+        'location',
+        'nearby_locations',
+        'age',
+        'gender',
+        'fitness_goal',
+        'experience_level',
+        'budget_range',
+        'diet_preference',
+        'gym_name',
+        'gym_services',
+        'verification_status',
+        'preferred_package_id',
+        'preferred_rate',
         'password',
     ];
 
@@ -47,13 +62,10 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
     protected static function booted(): void
     {
@@ -65,6 +77,11 @@ class User extends Authenticatable
     public function trainerProfile()
     {
         return $this->hasOne(TrainerProfile::class);
+    }
+
+    public function preferredPackage()
+    {
+        return $this->belongsTo(MembershipPackage::class, 'preferred_package_id');
     }
 
     public function memberships()

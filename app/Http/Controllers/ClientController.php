@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\DietPlan;
 use App\Models\CallRequest;
+use App\Models\Booking;
 use App\Models\ClientChat;
 use App\Models\ClientChatMessage;
+use App\Models\Complaint;
 use App\Models\Membership;
 use App\Models\MembershipPackage;
 use App\Models\Payment;
+use App\Models\Review;
 use App\Models\TrainerProfile;
 use App\Models\User;
 use App\Models\WorkoutPlan;
@@ -42,29 +45,194 @@ class ClientController extends Controller
             'dietPlan' => $membership ? Auth::user()->dietPlans()->latest()->first() : null,
             'recentPayments' => Auth::user()->payments()->latest()->take(3)->get(),
             'attendanceCount' => $membership ? Auth::user()->attendances()->where('status', 'present')->count() : 0,
+            'latestProgress' => Auth::user()->progressRecords()->latest('recorded_at')->first(),
         ]);
     }
 
-    public function packages(): View
+    public function onboarding(): View
     {
+        Auth::user()->ensureMemberIdentity();
+
+        $userLocation = Auth::user()->location;
+        $nearbyTrainers = collect();
+        $nearbyGyms = collect();
+
+        $sessionTrainerIds = collect(session('nearby_trainers', []))->pluck('id')->filter()->values();
+        if ($sessionTrainerIds->isNotEmpty()) {
+            $trainerMap = TrainerProfile::with('user')
+                ->whereIn('id', $sessionTrainerIds->all())
+                ->get()
+                ->keyBy('id');
+
+            $nearbyTrainers = $sessionTrainerIds->map(fn ($id) => $trainerMap->get($id))->filter();
+        } elseif ($userLocation) {
+            $nearbyTrainers = TrainerProfile::with('user')
+                ->whereHas('user', function ($query) use ($userLocation) {
+                    $query->where('location', 'like', "%{$userLocation}%")
+                        ->orWhere('nearby_locations', 'like', "%{$userLocation}%");
+                })
+                ->limit(6)
+                ->get();
+
+            $nearbyGyms = User::query()
+                ->where('role', 'gym_owner')
+                ->where(function ($query) use ($userLocation) {
+                    $query->where('location', 'like', "%{$userLocation}%")
+                        ->orWhere('nearby_locations', 'like', "%{$userLocation}%");
+                })
+                ->limit(6)
+                ->get();
+        }
+
+        return view('client.onboarding', [
+            'nearbyTrainers' => $nearbyTrainers,
+            'nearbyGyms' => $nearbyGyms,
+        ]);
+    }
+
+    public function packages(Request $request): View
+    {
+        $trainer = $request->filled('trainer')
+            ? TrainerProfile::with(['user', 'preferredPackage'])->find($request->integer('trainer'))
+            : null;
+
+        $gym = $request->filled('gym')
+            ? User::with('preferredPackage')->where('role', 'gym_owner')->find($request->integer('gym'))
+            : null;
+
         return view('client.packages', [
             'packages' => MembershipPackage::visible()->get(),
+            'trainer' => $trainer,
+            'gym' => $gym,
+            'recommendedPackage' => $trainer?->preferredPackage ?? $gym?->preferredPackage,
         ]);
     }
 
     public function trainers(Request $request): View
     {
+        $search = trim((string) $request->query('q'));
+        $package = MembershipPackage::visible()->whereKey($request->integer('package'))->first();
+
+        $query = TrainerProfile::with(['user', 'preferredPackage'])
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('specialty', 'like', "%{$search}%")
+                        ->orWhere('category', 'like', "%{$search}%")
+                        ->orWhereHas('user', function ($query) use ($search) {
+                            $query->where('name', 'like', "%{$search}%")
+                                ->orWhere('headline', 'like', "%{$search}%")
+                                ->orWhere('location', 'like', "%{$search}%")
+                                ->orWhere('nearby_locations', 'like', "%{$search}%");
+                        });
+                });
+            });
+
+        $trainers = $query->get();
+
+        // compute client coords from request or user profile location
+        $locationService = app(\App\Services\LocationService::class);
+        $clientLat = $request->input('lat');
+        $clientLng = $request->input('lng');
+
+        if (empty($clientLat) || empty($clientLng)) {
+            if (auth()->check() && auth()->user()->location) {
+                $storedLocation = auth()->user()->location;
+                $parsedLocation = json_decode($storedLocation, true);
+                if (is_array($parsedLocation) && ! empty($parsedLocation['latitude']) && ! empty($parsedLocation['longitude'])) {
+                    $clientLat = $parsedLocation['latitude'];
+                    $clientLng = $parsedLocation['longitude'];
+                } else {
+                    $coords = $locationService->geocode($storedLocation);
+                    if ($coords) {
+                        $clientLat = $coords['lat'];
+                        $clientLng = $coords['lng'];
+                    }
+                }
+            }
+        }
+
+        $trainers = $trainers->map(function (TrainerProfile $trainer) use ($clientLat, $clientLng, $locationService) {
+            $trainer->distance_km = null;
+
+            if (! empty($clientLat) && ! empty($clientLng) && ! empty($trainer->latitude) && ! empty($trainer->longitude)) {
+                $trainer->distance_km = round($locationService->distanceBetween((float) $clientLat, (float) $clientLng, (float) $trainer->latitude, (float) $trainer->longitude), 2);
+            }
+
+            return $trainer;
+        });
+
+        if (! empty($clientLat) && ! empty($clientLng)) {
+            $trainers = $trainers->sortBy(function (TrainerProfile $trainer) {
+                return $trainer->distance_km === null ? INF : $trainer->distance_km;
+            })->values();
+        }
+
         return view('client.trainers', [
+            'package' => $package,
+            'trainers' => collect($trainers),
+            'search' => $search,
+        ]);
+    }
+
+    public function gyms(Request $request): View
+    {
+        $search = trim((string) $request->query('q'));
+
+        return view('client.gyms', [
+            'gyms' => User::query()
+                ->where('role', 'gym_owner')
+                ->when($search !== '', function ($query) use ($search) {
+                    $query->where(function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('gym_name', 'like', "%{$search}%")
+                            ->orWhere('gym_services', 'like', "%{$search}%")
+                            ->orWhere('location', 'like', "%{$search}%")
+                            ->orWhere('nearby_locations', 'like', "%{$search}%");
+                    });
+                })
+                ->orderByRaw('coalesce(gym_name, name)')
+                ->get(),
+            'search' => $search,
             'package' => MembershipPackage::visible()->whereKey($request->integer('package'))->first(),
-            'trainers' => TrainerProfile::with('user')->get(),
         ]);
     }
 
     public function checkout(Request $request): View
     {
+        $trainer = $request->integer('trainer')
+            ? TrainerProfile::with(['user', 'preferredPackage'])->find($request->integer('trainer'))
+            : null;
+
+        $gym = $request->integer('gym')
+            ? User::with('preferredPackage')->where('role', 'gym_owner')->find($request->integer('gym'))
+            : null;
+
+        $package = $request->integer('package')
+            ? MembershipPackage::visible()->find($request->integer('package'))
+            : null;
+
+        if (! $package) {
+            $package = $trainer?->preferredPackage ?? $gym?->preferredPackage;
+        }
+
+        if (! $package) {
+            if ($trainer) {
+                return redirect()->route('client.packages', ['trainer' => $trainer->id])
+                    ->with('warning', 'Please select a package for the chosen trainer.');
+            }
+            if ($gym) {
+                return redirect()->route('client.packages', ['gym' => $gym->id])
+                    ->with('warning', 'Please select a package for the chosen gym.');
+            }
+
+            abort(404);
+        }
+
         return view('client.checkout', [
-            'package' => MembershipPackage::visible()->findOrFail($request->integer('package')),
-            'trainer' => TrainerProfile::with('user')->whereKey($request->integer('trainer'))->first(),
+            'package' => $package,
+            'trainer' => $trainer,
+            'gym' => $gym,
+            'priceOverride' => $trainer?->preferred_rate ?? $gym?->preferred_rate,
         ]);
     }
 
@@ -73,11 +241,22 @@ class ClientController extends Controller
         $data = $request->validate([
             'package_id' => ['required', 'exists:membership_packages,id'],
             'trainer_id' => ['nullable', 'exists:trainer_profiles,id'],
+            'gym_id' => ['nullable', 'exists:users,id'],
             'method' => ['required', 'in:mpesa,card,bank,cash'],
+            'amount' => ['nullable', 'numeric', 'min:1'],
         ]);
 
         $package = MembershipPackage::visible()->findOrFail($data['package_id']);
         $trainerProfile = isset($data['trainer_id']) ? TrainerProfile::find($data['trainer_id']) : null;
+        $gymOwner = isset($data['gym_id']) ? User::where('role', 'gym_owner')->find($data['gym_id']) : null;
+        $amount = $data['amount'] ?? $package->price;
+
+        if ($trainerProfile) {
+            $amount = $trainerProfile->preferred_rate ?? $amount;
+        } elseif ($gymOwner) {
+            $amount = $gymOwner->preferred_rate ?? $amount;
+        }
+
         $startsAt = now();
         $endsAt = match ($package->duration_unit) {
             'day' => $startsAt->copy()->addDays($package->duration_count),
@@ -90,6 +269,7 @@ class ClientController extends Controller
             'member_id' => Auth::id(),
             'membership_package_id' => $package->id,
             'trainer_id' => $trainerProfile?->user_id,
+            'gym_owner_id' => $gymOwner?->id,
             'starts_at' => $startsAt->toDateString(),
             'ends_at' => $endsAt->toDateString(),
             'status' => 'active',
@@ -99,8 +279,10 @@ class ClientController extends Controller
         Payment::create([
             'member_id' => Auth::id(),
             'membership_id' => $membership->id,
+            'trainer_id' => $trainerProfile?->user_id,
+            'gym_owner_id' => $gymOwner?->id,
             'phone' => Auth::user()->phone,
-            'amount' => $package->price,
+            'amount' => $amount,
             'method' => $data['method'],
             'status' => 'paid',
             'reference' => 'FITZONE-'.now()->format('YmdHis').'-'.Auth::id(),
@@ -337,12 +519,85 @@ class ClientController extends Controller
         return redirect()->route('client.chat', ['room' => 'member', 'member_chat' => $chat->id]);
     }
 
+    public function storeBooking(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'target_user_id' => ['required', 'exists:users,id'],
+            'target_type' => ['required', 'in:trainer,gym'],
+            'scheduled_at' => ['nullable', 'date'],
+            'notes' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $target = $this->discoveryTarget($data['target_user_id'], $data['target_type']);
+
+        Booking::create($data + [
+            'client_id' => Auth::id(),
+            'target_user_id' => $target->id,
+            'status' => 'pending',
+        ]);
+
+        return back()->with('status', 'Booking request sent to '.$this->targetLabel($target, $data['target_type']).'.');
+    }
+
+    public function storeReview(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'target_user_id' => ['required', 'exists:users,id'],
+            'target_type' => ['required', 'in:trainer,gym'],
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'body' => ['nullable', 'string', 'max:700'],
+        ]);
+
+        $target = $this->discoveryTarget($data['target_user_id'], $data['target_type']);
+
+        Review::create($data + [
+            'client_id' => Auth::id(),
+            'target_user_id' => $target->id,
+        ]);
+
+        return back()->with('status', 'Review submitted for '.$this->targetLabel($target, $data['target_type']).'.');
+    }
+
+    public function storeComplaint(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'target_user_id' => ['required', 'exists:users,id'],
+            'target_type' => ['required', 'in:trainer,gym'],
+            'subject' => ['required', 'string', 'max:120'],
+            'body' => ['required', 'string', 'max:1000'],
+        ]);
+
+        $target = $this->discoveryTarget($data['target_user_id'], $data['target_type']);
+
+        Complaint::create($data + [
+            'client_id' => Auth::id(),
+            'target_user_id' => $target->id,
+            'status' => 'open',
+        ]);
+
+        return back()->with('status', 'Complaint submitted for admin review.');
+    }
+
     private function packageChatFor(Membership $membership): ClientChat
     {
         return ClientChat::firstOrCreate(
             ['type' => 'package_group', 'membership_package_id' => $membership->membership_package_id],
             ['title' => $membership->package->name.' Members Chat']
         );
+    }
+
+    private function discoveryTarget(int $targetUserId, string $targetType): User
+    {
+        $role = $targetType === 'trainer' ? 'trainer' : 'gym_owner';
+
+        return User::whereKey($targetUserId)->where('role', $role)->firstOrFail();
+    }
+
+    private function targetLabel(User $target, string $targetType): string
+    {
+        return $targetType === 'gym'
+            ? ($target->gym_name ?: $target->name)
+            : $target->name;
     }
 
     private function trainerChatFor(Membership $membership): ClientChat

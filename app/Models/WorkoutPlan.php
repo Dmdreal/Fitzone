@@ -17,14 +17,10 @@ class WorkoutPlan extends Model
         'is_active',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'starts_at' => 'date',
-            'ends_at' => 'date',
-            'is_active' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'starts_at' => 'date',
+        'ends_at' => 'date',
+    ];
 
     public function member()
     {

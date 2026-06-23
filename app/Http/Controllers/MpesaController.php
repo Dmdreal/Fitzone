@@ -6,8 +6,10 @@ use App\Models\Membership;
 use App\Models\MembershipPackage;
 use App\Models\Payment;
 use App\Models\TrainerProfile;
+use App\Models\User;
 use App\Models\DietPlan;
 use App\Models\WorkoutPlan;
+use App\Services\PaymentDistributionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,6 +38,7 @@ class MpesaController extends Controller
             'phone' => ['required', 'regex:/^254(7|1)\d{8}$/'],
             'package_id' => ['nullable', 'exists:membership_packages,id'],
             'trainer_id' => ['nullable', 'exists:trainer_profiles,id'],
+            'gym_id' => ['nullable', 'exists:users,id'],
             'amount' => ['nullable', 'numeric', 'min:1'],
         ]);
 
@@ -46,7 +49,7 @@ class MpesaController extends Controller
         $callbackUrl = $this->callbackUrl();
 
         if (! $this->isPublicHttpsUrl($callbackUrl)) {
-            return $this->failedResponse($request, 'Set MPESA_CALLBACK_URL in ');
+            return $this->failedResponse($request, 'Set MPESA_CALLBACK_URL in your .env file to a public HTTPS callback URL.');
         }
 
         $package = isset($data['package_id'])
@@ -56,86 +59,112 @@ class MpesaController extends Controller
             ? TrainerProfile::find($data['trainer_id'])
             : null;
 
-        $amount = $package?->price ?? $data['amount'] ?? null;
+        $gymOwner = isset($data['gym_id'])
+            ? User::where('role', 'gym_owner')->find($data['gym_id'])
+            : null;
+
+        $amount = $data['amount'] ?? null;
+
+        if ($package) {
+            $amount = $trainerProfile?->preferred_rate ?? $gymOwner?->preferred_rate ?? $package->price;
+        } elseif ($gymOwner) {
+            $amount = $gymOwner->preferred_rate ?? $amount;
+        }
 
         if (! $amount) {
             return $this->failedResponse($request, 'Enter an amount or select a package.');
         }
 
-        $payment = DB::transaction(function () use ($data, $package, $trainerProfile, $amount) {
+        try {
+            $payment = null;
+            $response = null;
+            $body = [];
             $membership = null;
 
-            if ($package && Auth::check()) {
-                $startsAt = now();
-                $endsAt = match ($package->duration_unit) {
-                    'day' => $startsAt->copy()->addDays($package->duration_count),
-                    'week' => $startsAt->copy()->addWeeks($package->duration_count),
-                    'month' => $startsAt->copy()->addMonths($package->duration_count),
-                    'year' => $startsAt->copy()->addYears($package->duration_count),
-                };
+            DB::transaction(function () use (&$payment, &$response, &$body, &$membership, $data, $package, $trainerProfile, $gymOwner, $amount, $callbackUrl) {
+                if ($package && Auth::check()) {
+                    $startsAt = now();
+                    $endsAt = match ($package->duration_unit) {
+                        'day' => $startsAt->copy()->addDays($package->duration_count),
+                        'week' => $startsAt->copy()->addWeeks($package->duration_count),
+                        'month' => $startsAt->copy()->addMonths($package->duration_count),
+                        'year' => $startsAt->copy()->addYears($package->duration_count),
+                    };
 
-                $membership = Membership::create([
+                    $membership = Membership::create([
+                        'member_id' => Auth::id(),
+                        'membership_package_id' => $package->id,
+                        'trainer_id' => $trainerProfile?->user_id,
+                        'gym_owner_id' => $gymOwner?->id,
+                        'starts_at' => $startsAt->toDateString(),
+                        'ends_at' => $endsAt->toDateString(),
+                        'status' => 'pending',
+                    ]);
+                }
+
+                $payment = Payment::create([
                     'member_id' => Auth::id(),
-                    'membership_package_id' => $package->id,
+                    'membership_id' => $membership?->id,
                     'trainer_id' => $trainerProfile?->user_id,
-                    'starts_at' => $startsAt->toDateString(),
-                    'ends_at' => $endsAt->toDateString(),
+                    'gym_owner_id' => $gymOwner?->id,
+                    'phone' => $data['phone'],
+                    'amount' => $amount,
+                    'method' => 'mpesa',
                     'status' => 'pending',
+                    'reference' => 'FITZONE-'.now()->format('YmdHis').'-'.(Auth::id() ?? 'GUEST'),
+                    'notes' => $package ? 'M-PESA checkout for '.$package->name : 'Standalone M-PESA payment',
                 ]);
-            }
 
-            return Payment::create([
-                'member_id' => Auth::id(),
-                'membership_id' => $membership?->id,
-                'phone' => $data['phone'],
-                'amount' => $amount,
-                'method' => 'mpesa',
-                'status' => 'pending',
-                'reference' => 'FITZONE-'.now()->format('YmdHis').'-'.(Auth::id() ?? 'GUEST'),
-                'notes' => $package ? 'M-PESA checkout for '.$package->name : 'Standalone M-PESA payment',
-            ]);
-        });
+                $timestamp = now()->format('YmdHis');
+                $response = Http::withToken($this->getToken())
+                    ->acceptJson()
+                    ->post($this->mpesaUrl('/mpesa/stkpush/v1/processrequest'), [
+                        'BusinessShortCode' => config('services.mpesa.shortcode'),
+                        'Password' => base64_encode(config('services.mpesa.shortcode').config('services.mpesa.passkey').$timestamp),
+                        'Timestamp' => $timestamp,
+                        'TransactionType' => 'CustomerPayBillOnline',
+                        'Amount' => (int) ceil((float) $amount),
+                        'PartyA' => $data['phone'],
+                        'PartyB' => config('services.mpesa.shortcode'),
+                        'PhoneNumber' => $data['phone'],
+                        'CallBackURL' => $callbackUrl,
+                        'AccountReference' => $payment->reference,
+                        'TransactionDesc' => 'Fitzone payment',
+                    ]);
 
-        $timestamp = now()->format('YmdHis');
-        $response = Http::withToken($this->getToken())
-            ->acceptJson()
-            ->post($this->mpesaUrl('/mpesa/stkpush/v1/processrequest'), [
-                'BusinessShortCode' => config('services.mpesa.shortcode'),
-                'Password' => base64_encode(config('services.mpesa.shortcode').config('services.mpesa.passkey').$timestamp),
-                'Timestamp' => $timestamp,
-                'TransactionType' => 'CustomerPayBillOnline',
-                'Amount' => (int) ceil((float) $amount),
-                'PartyA' => $data['phone'],
-                'PartyB' => config('services.mpesa.shortcode'),
-                'PhoneNumber' => $data['phone'],
-                'CallBackURL' => $callbackUrl,
-                'AccountReference' => $payment->reference,
-                'TransactionDesc' => 'Fitzone payment',
-            ]);
+                $body = $response->json();
 
-        $body = $response->json();
+                Log::info('M-PESA STK push response', [
+                    'payment_id' => $payment->id,
+                    'status' => $response->status(),
+                    'body' => $body,
+                ]);
 
-        Log::info('M-PESA STK push response', [
-            'payment_id' => $payment->id,
-            'status' => $response->status(),
-            'body' => $body,
-        ]);
+                if (! $response->successful() || ($body['ResponseCode'] ?? null) !== '0') {
+                    $notes = $body['errorMessage'] ?? $body['ResponseDescription'] ?? 'M-PESA STK push failed.';
 
-        if (! $response->successful() || ($body['ResponseCode'] ?? null) !== '0') {
-            $payment->update([
-                'status' => 'failed',
-                'mpesa_response' => $body,
-                'notes' => $body['errorMessage'] ?? $body['ResponseDescription'] ?? 'M-PESA STK push failed.',
-            ]);
+                    $payment->update([
+                        'status' => 'failed',
+                        'mpesa_response' => $body,
+                        'notes' => $notes,
+                    ]);
 
-            return $this->failedResponse($request, $payment->notes);
+                    throw new \RuntimeException($notes);
+                }
+
+                $payment->update([
+                    'mpesa_checkout_request_id' => $body['CheckoutRequestID'] ?? null,
+                    'mpesa_merchant_request_id' => $body['MerchantRequestID'] ?? null,
+                    'transaction_code' => $body['CheckoutRequestID'] ?? $body['MerchantRequestID'] ?? null,
+                ]);
+            });
+        } catch (\Throwable $exception) {
+            $message = $exception instanceof \RuntimeException
+                ? $exception->getMessage()
+                : 'M-PESA payment failed. '.$exception->getMessage();
+
+            return $this->failedResponse($request, $message);
         }
-
-        $payment->update([
-            'mpesa_checkout_request_id' => $body['CheckoutRequestID'] ?? null,
-            'mpesa_merchant_request_id' => $body['MerchantRequestID'] ?? null,
-            'mpesa_response' => $body,
-        ]);
 
         if ($request->expectsJson()) {
             return response()->json([
@@ -205,6 +234,7 @@ class MpesaController extends Controller
 
             if ($payment->membership) {
                 $this->createActivationBenefits($payment->membership->fresh(['package']));
+                (new PaymentDistributionService())->distribute($payment);
             }
         });
 

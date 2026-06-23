@@ -15,14 +15,11 @@ class ProgressRecord extends Model
         'notes',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'recorded_at' => 'date',
-            'weight_kg' => 'decimal:2',
-            'body_fat_percentage' => 'decimal:2',
-        ];
-    }
+    protected $casts = [
+        'recorded_at' => 'date',
+        'weight_kg' => 'decimal:2',
+        'body_fat_percentage' => 'decimal:2',
+    ];
 
     public function member()
     {

@@ -7,11 +7,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement("ALTER TABLE client_chats MODIFY type ENUM('package_group', 'trainer_direct', 'member_direct') NOT NULL");
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE client_chats MODIFY type ENUM('package_group', 'trainer_direct', 'member_direct') NOT NULL");
+        }
     }
 
     public function down(): void
     {
-        DB::statement("ALTER TABLE client_chats MODIFY type ENUM('package_group', 'trainer_direct') NOT NULL");
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE client_chats MODIFY type ENUM('package_group', 'trainer_direct') NOT NULL");
+        }
     }
 };

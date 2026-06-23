@@ -17,6 +17,14 @@ return new class extends Migration
                 $table->foreignId('membership_id')->nullable()->after('member_id')->constrained()->nullOnDelete();
             }
 
+            if (! Schema::hasColumn('payments', 'trainer_id')) {
+                $table->foreignId('trainer_id')->nullable()->after('membership_id')->constrained('users')->nullOnDelete();
+            }
+
+            if (! Schema::hasColumn('payments', 'gym_owner_id')) {
+                $table->foreignId('gym_owner_id')->nullable()->after('trainer_id')->constrained('users')->nullOnDelete();
+            }
+
             if (! Schema::hasColumn('payments', 'method')) {
                 $table->string('method')->default('mpesa')->after('amount');
             }
@@ -33,8 +41,12 @@ return new class extends Migration
                 $table->string('mpesa_merchant_request_id')->nullable()->after('mpesa_checkout_request_id');
             }
 
+            if (! Schema::hasColumn('payments', 'transaction_code')) {
+                $table->string('transaction_code')->nullable()->after('mpesa_merchant_request_id');
+            }
+
             if (! Schema::hasColumn('payments', 'mpesa_response')) {
-                $table->json('mpesa_response')->nullable()->after('mpesa_merchant_request_id');
+                $table->json('mpesa_response')->nullable()->after('transaction_code');
             }
 
             if (! Schema::hasColumn('payments', 'paid_at')) {
@@ -54,10 +66,13 @@ return new class extends Migration
                 'notes',
                 'paid_at',
                 'mpesa_response',
+                'transaction_code',
                 'mpesa_merchant_request_id',
                 'mpesa_checkout_request_id',
                 'reference',
                 'method',
+                'gym_owner_id',
+                'trainer_id',
                 'membership_id',
                 'member_id',
             ] as $column) {

@@ -11,20 +11,18 @@ class Membership extends Model
         'member_id',
         'membership_package_id',
         'trainer_id',
+        'gym_owner_id',
         'starts_at',
         'ends_at',
         'status',
         'activated_at',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'starts_at' => 'date',
-            'ends_at' => 'date',
-            'activated_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'starts_at' => 'date',
+        'ends_at' => 'date',
+        'activated_at' => 'datetime',
+    ];
 
     public function member()
     {
@@ -39,6 +37,11 @@ class Membership extends Model
     public function trainer()
     {
         return $this->belongsTo(User::class, 'trainer_id');
+    }
+
+    public function gymOwner()
+    {
+        return $this->belongsTo(User::class, 'gym_owner_id');
     }
 
     public function payments()
