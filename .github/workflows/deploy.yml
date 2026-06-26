@@ -67,16 +67,18 @@ jobs:
       # --exclude='.git' no need to send git history to server
       # --exclude='node_modules' never send node_modules to server
       # --exclude='storage/logs' keep server logs intact
-      - name: Deploy files via rsync
+      - name: Run Laravel deployment commands
         run: |
-          rsync -avz --delete \
-            --exclude='.git' \
-            --exclude='.env' \
-            --exclude='node_modules' \
-            --exclude='storage/logs' \
-            --exclude='storage/framework/sessions' \
-            -e "ssh -p ${{ secrets.SSH_PORT }}" \
-            ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/fitzonegym.kenswedtechclub.org/
+          ssh -p ${{ secrets.SSH_PORT }} \
+            -o StrictHostKeyChecking=no \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            set -e
+            cd ~/fitzonegym.kenswedtechclub.org
+            php artisan migrate --force
+            php artisan optimize:clear
+            php artisan optimize
+            echo "Deployment complete!"
+          EOF
 
       # Step 9: Run Laravel commands on the server
       # Only artisan commands — no git, no composer, no npm on server side
