@@ -60,7 +60,7 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      # Step 8: Sync files from GitHub Actions to your server
+      # Step 8: Sync files from GitHub Actions to your server #
       # rsync only transfers files that changed (fast and efficient)
       # --delete removes files on server that were deleted from repo
       # --exclude='.env' keeps your server .env untouched (never overwrite it)
