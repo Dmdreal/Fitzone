@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Fitzone Gym Management</title>
+    <title>Fitzone Gym Management - Kenswed</title>
     <style>
         :root {
             --ink: #111827;
