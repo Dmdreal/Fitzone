@@ -9,6 +9,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      DEPLOY_PORT: ${{ secrets.SSH_PORT || '22' }}
 
     steps:
       - name: Checkout code
@@ -28,12 +30,16 @@ jobs:
       - name: Add server to known_hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -p ${{ secrets.SSH_PORT || '22' }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -p "$DEPLOY_PORT" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
+
+      - name: Test SSH connection
+        run: |
+          ssh -o BatchMode=yes -T -p "$DEPLOY_PORT" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" "echo SSH connection OK"
 
       - name: Deploy fitzonegym.kenswedtechclub.org
         run: |
-          ssh -T -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -o BatchMode=yes -T -p "$DEPLOY_PORT" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" << 'EOF'
             set -e
 
             # Start agent & add GitHub deploy key
