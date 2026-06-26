@@ -35,7 +35,7 @@ jobs:
 
       - name: Test SSH connection
         run: |
-          ssh -o BatchMode=yes -T -p "$DEPLOY_PORT" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" "echo SSH connection OK"
+          ssh -vvv -o BatchMode=yes -o PreferredAuthentications=publickey -T -p "$DEPLOY_PORT" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" "echo SSH connection OK && whoami && hostname"
 
       - name: Deploy fitzonegym.kenswedtechclub.org
         run: |
