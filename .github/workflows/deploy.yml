@@ -30,16 +30,16 @@ jobs:
       - name: Add server to known_hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -p "$DEPLOY_PORT" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+          ssh-keyscan -T 15 -p "$DEPLOY_PORT" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts || true
           chmod 600 ~/.ssh/known_hosts
 
       - name: Test SSH connection
         run: |
-          ssh -vvv -o BatchMode=yes -o PreferredAuthentications=publickey -T -p "$DEPLOY_PORT" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" "echo SSH connection OK && whoami && hostname"
+          ssh -vvv -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o PreferredAuthentications=publickey -T -p "$DEPLOY_PORT" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" "echo SSH connection OK && whoami && hostname"
 
       - name: Deploy fitzonegym.kenswedtechclub.org
         run: |
-          ssh -o BatchMode=yes -T -p "$DEPLOY_PORT" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" << 'EOF'
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -T -p "$DEPLOY_PORT" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" << 'EOF'
             set -e
 
             # Start agent & add GitHub deploy key
