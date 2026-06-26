@@ -1,0 +1,68 @@
+name: Deploy fitzonegym.kenswedtechclub.org
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Debug secrets presence
+        run: |
+          echo "HOST set: ${{ secrets.SSH_HOST != '' }}"
+          echo "PORT set: ${{ secrets.SSH_PORT != '' }}"
+          echo "USER set: ${{ secrets.SSH_USER != '' }}"
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p ${{ secrets.SSH_PORT || '22' }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy fitzonegym.kenswedtechclub.org
+        run: |
+          ssh -T -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            set -e
+
+            # Start agent & add GitHub deploy key
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/id_ed25519_David_Fitzone
+
+            # Create target folder if missing
+            mkdir -p ~/fitzonegym.kenswedtechclub.org
+            cd ~/fitzonegym.kenswedtechclub.org
+
+            # Git setup
+            if [ ! -d ".git" ]; then
+                GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519_David_Fitzone" git init
+                git remote add origin git@github.com:Dmdreal/Fitzone.git
+                GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519_David_Fitzone" git fetch origin
+                git checkout -B main origin/main
+            else
+                GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519_David_Fitzone" git fetch origin
+                git reset --hard origin/main
+            fi
+
+            # Install dependencies
+            composer install --no-dev --optimize-autoloader
+            
+
+            # Laravel deployment
+            php artisan migrate --force
+            php artisan optimize:clear
+            php artisan optimize
+
+            echo "Deployment complete"
+          EOF
