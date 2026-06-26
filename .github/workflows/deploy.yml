@@ -12,61 +12,34 @@ jobs:
 
     steps:
 
-      # Step 1: Get your code onto the GitHub Actions machine
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Setup PHP on the GitHub Actions machine
-      # This lets us run composer install here, not on the server
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'    # Change to match your project's PHP version
+          php-version: '8.5'
 
-      # Step 3: Install PHP dependencies on GitHub Actions machine
-      # --no-dev skips dev packages, --optimize-autoloader speeds up class loading
       - name: Install Composer dependencies
         run: composer install --no-dev --optimize-autoloader
 
-      # Step 4: Setup Node.js on the GitHub Actions machine
-      # Only needed if you have a frontend (React, Vue, Inertia + Vite)
-      # - name: Setup Node.js
-        #uses: actions/setup-node@v4
-        #with:
-        #  node-version: '20'    # Use LTS version
-
-      # Step 5: Install JS dependencies and build frontend assets
-      # This runs npm build on GitHub's machine — your server never needs Node.js
-      # The built /public/build folder is included in the rsync below
-      # - name: Install JS dependencies and build
-      #   run: |
-      #     npm ci
-      #     npm run build
-
-      # Step 6: Load your SSH private key into the Actions SSH agent
-      # This is the key GitHub Actions uses to log into your server
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Test SSH connection
-        run: ssh -v -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo connected"
-
-      # Step 7: Add your server's fingerprint to known_hosts
-      # Prevents "Host key verification failed" errors
+      # Must come BEFORE any ssh/rsync commands
       - name: Add server to known_hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
 
-      # Step 8: Sync files from GitHub Actions to your server
-      # rsync only transfers files that changed (fast and efficient)
-      # --delete removes files on server that were deleted from repo
-      # --exclude='.env' keeps your server .env untouched (never overwrite it)
-      # --exclude='.git' no need to send git history to server
-      # --exclude='node_modules' never send node_modules to server
-      # --exclude='storage/logs' keep server logs intact
+      # Now test AFTER known_hosts is populated
+      - name: Test SSH connection
+        run: |
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo connected"
+
       - name: Deploy files via rsync
         run: |
           rsync -avz --delete \
@@ -75,17 +48,12 @@ jobs:
             --exclude='node_modules' \
             --exclude='storage/logs' \
             --exclude='storage/framework/sessions' \
-            -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no" \
+            -e "ssh -p ${{ secrets.SSH_PORT }}" \
             ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/fitzonegym.kenswedtechclub.org/
 
-      # Step 9: Run Laravel commands on the server
-      # Only artisan commands — no git, no composer, no npm on server side
-      # This is a single SSH connection that just runs these commands and exits
       - name: Run Laravel deployment commands
         run: |
-          ssh -p ${{ secrets.SSH_PORT }} \
-            -o StrictHostKeyChecking=no \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
             cd ~/fitzonegym.kenswedtechclub.org
             php artisan migrate --force
@@ -93,4 +61,3 @@ jobs:
             php artisan optimize
             echo "Deployment complete!"
           EOF
-
