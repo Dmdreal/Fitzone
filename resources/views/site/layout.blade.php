@@ -35,7 +35,13 @@
         .site-nav { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.95); border-bottom: 1px solid var(--line); backdrop-filter: blur(14px); box-shadow: 0 10px 28px rgba(13,31,54,.05); }
         .nav-inner { width: min(1180px, calc(100% - 32px)); margin: 0 auto; min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
         .brand { display: flex; align-items: center; gap: 10px; font-weight: 950; }
-        .brand-mark { width: 42px; height: 42px; border-radius: 8px; background: var(--red); color: #fff; display: grid; place-items: center; }
+        .brand-mark { width: 56px; height: 42px; border-radius: 8px; background: var(--red); color: #fff; display: grid; place-items: center; font-size: 20px; transition: transform .3s ease, opacity .2s ease; overflow: hidden; position: relative; }
+        .brand-mark:hover { transform: scale(1.05); }
+        .brand-mark .brand-icon { position: absolute; inset: 0; display: grid; place-items: center; font-size: 20px; opacity: 0; animation: logoCycle 6s infinite ease-in-out; }
+        .brand-mark .brand-icon:nth-child(1) { animation-delay: 0s; }
+        .brand-mark .brand-icon:nth-child(2) { animation-delay: 2s; }
+        .brand-mark .brand-icon:nth-child(3) { animation-delay: 4s; }
+        @keyframes logoCycle { 0%, 16.66% { opacity: 1; transform: translateY(0); } 25%, 100% { opacity: 0; transform: translateY(-8px); } }
         .links { display: flex; align-items: center; gap: 18px; color: #334155; font-weight: 800; font-size: 14px; }
         .btn { border: 0; border-radius: 7px; padding: 12px 16px; font-weight: 950; color: #fff; background: var(--blue); display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }
         .btn.green { background: var(--blue); }
@@ -59,8 +65,20 @@
         .section-head h2, .page-title h1 { margin: 0; font-size: clamp(30px, 4vw, 48px); line-height: 1; }
         .section-head p, .page-title p, .muted { color: var(--muted); line-height: 1.55; }
         .grid { display: grid; gap: 16px; }
-        .three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        /* Reveal / scroll animations */
+        .reveal { opacity: 0; transform: translateY(18px) scale(.995); transition: opacity .6s cubic-bezier(.2,.9,.3,1), transform .6s cubic-bezier(.2,.9,.3,1); will-change: opacity, transform; }
+        .reveal.visible { opacity: 1; transform: none; }
+        .reveal.fade { transform: none; }
+        .reveal.slow { transition-duration: .9s; }
+        .reveal.scale { transform: translateY(6px) scale(.98); }
+        .reveal.inline { display: inline-block; }
+        .steps-grid { display: grid; gap: 18px; align-items: stretch; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+        .steps-grid .arrow { display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--blue); }
+        .three { grid-template-columns: repeat(3, minmax(260px, 1fr)); }
+        .two { grid-template-columns: repeat(2, minmax(260px, 1fr)); }
+        .four { grid-template-columns: repeat(4, minmax(220px, 1fr)); }
+        .flow-bottom { display: flex; justify-content: center; }
+        .flow-bottom .card { max-width: 640px; width: 100%; }
         .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 20px; box-shadow: 0 18px 44px rgba(13,31,54,.08); transition: all 0.3s ease; }
         .card:hover { transform: translateY(-4px); box-shadow: 0 24px 54px rgba(13,31,54,.13); border-color: var(--blue); }
         .image-card { overflow: hidden; padding: 0; position: relative; }
@@ -118,20 +136,76 @@
         .benefits-list li { padding: 10px 0; border-bottom: 1px solid var(--line); display: flex; gap: 10px; align-items: center; }
         .benefits-list li:last-child { border-bottom: none; }
         .benefits-list li:before { content: "✓"; color: var(--blue); font-weight: 950; font-size: 18px; }
+        .hamburger { display: none; flex-direction: column; gap: 6px; cursor: pointer; background: none; border: none; padding: 8px; margin-right: 8px; }
+        .hamburger span { width: 24px; height: 3px; background: var(--ink); border-radius: 2px; transition: all 0.3s ease; display: block; }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(10px, 10px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+        .mobile-menu { display: none; position: fixed; top: 76px; left: 0; right: 0; background: rgba(255,255,255,.98); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); flex-direction: column; gap: 0; max-height: calc(100vh - 76px); overflow-y: auto; z-index: 19; box-shadow: 0 10px 28px rgba(13,31,54,.1); }
+        .mobile-menu.active { display: flex; }
+        .mobile-menu a { padding: 16px 24px; color: #334155; font-weight: 700; font-size: 15px; border-bottom: 1px solid var(--line); text-decoration: none; transition: background 0.2s; }
+        .mobile-menu a:hover { background: var(--soft); }
+        .mobile-menu .btn { width: calc(100% - 48px); margin: 12px 24px; }
+        .nav-inner { padding: 0 16px; }
+        .brand span small { font-size: 10px; line-height: 1.2; }
         @media (max-width: 900px) {
             .links { display: none; }
-            .hero-strip, .three, .two, .form-grid, .stats-section { grid-template-columns: minmax(0, 1fr); }
+            .hamburger { display: flex; }
+            .hero-strip, .two, .four, .form-grid, .stats-section { grid-template-columns: repeat(2, minmax(240px, 1fr)); }
+            .steps-grid { grid-template-columns: 1fr; }
+            .steps-grid .arrow { display: none; }
             .section-head { display: grid; }
             .hero { min-height: auto; }
             .feature-item { gap: 12px; }
-            .footer-inner { flex-direction: column; }
+            .footer-inner { display: grid; grid-template-columns: 1fr; gap: 28px; }
+            .nav-inner { gap: 12px; padding: 0 12px; }
+            .btn { padding: 10px 14px; font-size: 13px; }
+            html { min-width: 320px; }
+            body { margin: 0; padding: 0; }
+            section { padding: 48px 0; }
+            .section-inner { width: min(100%, calc(100% - 24px)); padding: 0 12px; }
+            .footer-bottom { grid-template-columns: 1fr; gap: 16px; }
+            .flow-bottom { padding: 0 12px; }
+        }
+        @media (max-width: 640px) {
+            .three, .two, .four, .feature-grid, .stats-section { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .nav-inner { min-height: 70px; }
+            .brand { gap: 8px; font-size: 14px; }
+            .brand-mark { width: 36px; height: 36px; font-size: 16px; }
+            h1 { font-size: clamp(28px, 6vw, 48px); }
+            .hero-content { padding: 40px 0 50px; }
+            .cta-banner { padding: 24px; }
+            .cta-banner h2 { font-size: 24px; }
+            .stats-section { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .form-grid { grid-template-columns: 1fr; }
+            section { padding: 40px 0; }
+            .contact-card { padding: 16px; }
+        }
+        @media (max-width: 480px) {
+            .nav-inner { min-height: 64px; gap: 8px; }
+            .btn { padding: 8px 12px; font-size: 12px; }
+            .hero-strip { grid-template-columns: 1fr; }
+            .hero-actions { gap: 8px; }
+            .stats-section { gap: 12px; }
+            section { padding: 32px 0; }
+            h1 { font-size: clamp(24px, 5vw, 36px); }
+            .section-head h2, .page-title h1 { font-size: clamp(24px, 5vw, 36px); }
         }
     </style>
 </head>
 <body>
     <header class="site-nav">
         <div class="nav-inner">
-            <a class="brand" href="{{ route('site.home') }}"><span class="brand-mark">F</span><span>Fitzone<br><small>Smart Gym</small></span></a>
+            <a class="brand" href="{{ route('site.home') }}">
+                <span class="brand-mark">
+                    <span class="brand-icon">🏋️</span>
+                    <span class="brand-icon">🥇</span>
+                    <span class="brand-icon">💪</span>
+                </span>
+                <span>Fitzone<br><small>Smart Gym</small></span>
+            </a>
             <nav class="links">
                 <a href="{{ route('site.home') }}">Home</a>
                 <a href="{{ route('site.about') }}">About</a>
@@ -141,8 +215,117 @@
                 <a href="{{ route('site.contact') }}">Contact</a>
             </nav>
             <a class="btn green" href="{{ $dashboardRoute }}">{{ auth()->check() ? 'Dashboard' : 'Login Now' }}</a>
+            <button class="hamburger" aria-label="Toggle navigation menu" id="hamburgerBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
+        <nav class="mobile-menu" id="mobileMenu">
+            <a href="{{ route('site.home') }}" onclick="closeMobileMenu()">Home</a>
+            <a href="{{ route('site.about') }}" onclick="closeMobileMenu()">About</a>
+            <a href="{{ route('site.services') }}" onclick="closeMobileMenu()">Services</a>
+            <a href="{{ route('site.memberships') }}" onclick="closeMobileMenu()">Memberships</a>
+            <a href="{{ route('site.trainers') }}" onclick="closeMobileMenu()">Trainers</a>
+            <a href="{{ route('site.contact') }}" onclick="closeMobileMenu()">Contact</a>
+            <a class="btn green" href="{{ $dashboardRoute }}" onclick="closeMobileMenu()">{{ auth()->check() ? 'Dashboard' : 'Login Now' }}</a>
+        </nav>
     </header>
+    <script>
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        function toggleMobileMenu() {
+            hamburgerBtn.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        }
+
+        function closeMobileMenu() {
+            hamburgerBtn.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        hamburgerBtn.addEventListener('click', toggleMobileMenu);
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.site-nav') && mobileMenu.classList.contains('active')) {
+                closeMobileMenu();
+            }
+        });
+
+        // Close menu on window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 900) {
+                closeMobileMenu();
+            }
+        });
+
+    </script>
+
+    <script>
+        // Lightweight reveal-on-scroll and on-load animations
+        (function () {
+            const selectors = [
+                '.hero-content', '.hero-strip', '.section-head', '.card', '.image-card', '.feature-item', '.testimonial', '.step-badge', '.feature-grid > *', '.stat-item', '.cta-banner'
+            ].join(', ');
+
+            let nodes = [];
+            let observer;
+
+            function initReveal() {
+                nodes = Array.from(document.querySelectorAll(selectors));
+
+                if (!nodes.length) {
+                    return;
+                }
+
+                nodes.forEach(el => el.classList.add('reveal'));
+
+                observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const el = entry.target;
+                            const delay = el.dataset.delay ? Number(el.dataset.delay) : 0;
+                            setTimeout(() => el.classList.add('visible'), delay);
+                            observer.unobserve(el);
+                        }
+                    });
+                }, { root: null, rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+
+                nodes.forEach(el => observer.observe(el));
+                revealInitial();
+            }
+
+            function revealInitial() {
+                const initial = nodes.filter(el => el.getBoundingClientRect().top < window.innerHeight * 0.94);
+                initial.forEach((el, i) => {
+                    const delay = el.dataset.delay ? Number(el.dataset.delay) : i * 50;
+                    setTimeout(() => el.classList.add('visible'), delay);
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(initReveal, 80);
+
+                const rotatingIcons = Array.from(document.querySelectorAll('.rotating-icon'));
+
+                rotatingIcons.forEach(icon => {
+                    const frames = icon.dataset.icons?.split(',')?.map(item => item.trim()).filter(Boolean) || [];
+                    if (!frames.length) {
+                        return;
+                    }
+
+                    let index = 0;
+                    setInterval(() => {
+                        index = (index + 1) % frames.length;
+                        icon.textContent = frames[index];
+                    }, 2000);
+                });
+            });
+        })();
+    </script>
 
     @yield('content')
 

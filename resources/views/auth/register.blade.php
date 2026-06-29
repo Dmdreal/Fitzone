@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Register - Fitzone</title>
     <style>
         * { box-sizing: border-box; }
@@ -46,7 +47,6 @@
             <label>Confirm Password <input name="password_confirmation" type="password" required></label>
         </div>
         <label>Bio <textarea name="bio" placeholder="Tell people what you offer or what you want from Fitzone.">{{ old('bio') }}</textarea></label>
-
         <section class="panel hidden" data-member-panel>
             <div class="grid">
                 <label>Location <input id="reg-location" name="location" value="{{ old('location') }}" placeholder="Nairobi CBD, Westlands, Kilimani..."></label>
@@ -106,7 +106,21 @@
 
         <section class="panel hidden" data-trainer-panel>
             <div class="grid">
-                <label>Location <input name="location" value="{{ old('location') }}" placeholder="Nairobi CBD, Westlands, Kilimani..."></label>
+                <label>Location <input id="reg-trainer-location" name="location" value="{{ old('location') }}" placeholder="Nairobi CBD, Westlands, Kilimani..."></label>
+                <input type="hidden" id="reg-trainer-latitude" name="latitude" value="{{ old('latitude') }}">
+                <input type="hidden" id="reg-trainer-longitude" name="longitude" value="{{ old('longitude') }}">
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <button type="button" id="use-my-location-trainer" class="btn ghost" style="background:#10b981;padding:8px;border-radius:6px;color:#fff;border:0;">Use my current location</button>
+                    <span id="reg-trainer-location-status" style="font-size:13px;color:#475569;margin-left:6px;"></span>
+                </div>
+                <label>County
+                    <select id="reg-trainer-county" name="county_id">
+                        <option value="">Select county</option>
+                        @foreach(\App\Models\County::orderBy('name')->get() as $county)
+                            <option value="{{ $county->id }}" @selected(old('county_id') == $county->id)>{{ $county->display_name }}</option>
+                        @endforeach
+                    </select>
+                </label>
                 <label>Nearby Locations <input name="nearby_locations" value="{{ old('nearby_locations') }}" placeholder="Parklands, Lavington, Ngara..."></label>
                 <label>Specialty <input name="specialty" value="{{ old('specialty') }}" placeholder="Strength, yoga, weight loss..."></label>
                 <label>Category <input name="category" value="{{ old('category') }}" placeholder="strength, wellness, boxing..."></label>
@@ -174,24 +188,48 @@
         const latInput = document.getElementById('reg-latitude');
         const lngInput = document.getElementById('reg-longitude');
 
-        if (useBtn) {
-            useBtn.addEventListener('click', () => {
+        const useTrainerBtn = document.getElementById('use-my-location-trainer');
+        const trainerStatusSpan = document.getElementById('reg-trainer-location-status');
+        const trainerLatInput = document.getElementById('reg-trainer-latitude');
+        const trainerLngInput = document.getElementById('reg-trainer-longitude');
+        const trainerLocationInput = document.getElementById('reg-trainer-location');
+        const trainerCountySelect = document.getElementById('reg-trainer-county');
+
+        function initGeoButton(button, statusElement, latitudeField, longitudeField, locationField, countyField) {
+            if (! button) return;
+            button.addEventListener('click', () => {
                 if (! navigator.geolocation) {
-                    statusSpan.textContent = 'Geolocation not supported';
+                    statusElement.textContent = 'Geolocation not supported';
                     return;
                 }
-                statusSpan.textContent = 'Locating…';
+                statusElement.textContent = 'Locating…';
                 navigator.geolocation.getCurrentPosition((pos) => {
                     const lat = pos.coords.latitude;
                     const lng = pos.coords.longitude;
-                    latInput.value = lat;
-                    lngInput.value = lng;
-                    statusSpan.textContent = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+                    latitudeField.value = lat;
+                    longitudeField.value = lng;
+                    statusElement.textContent = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+                    if (locationField) {
+                        const rounded = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+                        locationField.value = rounded;
+                    }
+                    if (countyField) {
+                        const locationText = locationField?.value?.toLowerCase() || '';
+                        for (const name in counties) {
+                            if (name && locationText.includes(name)) {
+                                countyField.value = counties[name];
+                                break;
+                            }
+                        }
+                    }
                 }, (err) => {
-                    statusSpan.textContent = 'Unable to retrieve location';
+                    statusElement.textContent = 'Unable to retrieve location';
                 }, { enableHighAccuracy: true, timeout: 10000 });
             });
         }
+
+        initGeoButton(useBtn, statusSpan, latInput, lngInput, document.getElementById('reg-location'), countySelect);
+        initGeoButton(useTrainerBtn, trainerStatusSpan, trainerLatInput, trainerLngInput, trainerLocationInput, trainerCountySelect);
     </script>
 </body>
 </html>

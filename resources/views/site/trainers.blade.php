@@ -29,7 +29,7 @@
                     </ul>
                 </div>
             </article>
-            `  <article class="card image-card">
+            <article class="card image-card">
                 <img src="https://images.unsplash.com/photo-1549476464-37392f717541?auto=format&fit=crop&w=900&q=80" alt="Conditioning trainer">
                 <div>
                     <h3>⚡ Conditioning & HIIT</h3>
@@ -61,31 +61,28 @@
     <div class="section-inner">
         <h2 style="text-align:center; margin-bottom: 40px;">How Trainer Selection Works</h2>
         <div style="max-width: 900px; margin: 0 auto;">
-            <div class="grid" style="grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 24px;">
+            <div class="grid three" style="gap: 16px; margin-bottom: 24px;">
                 <div class="card" style="text-align: center; padding: 24px;">
                     <div class="step-badge" style="margin: 0 auto 12px;">1</div>
-                    <h3 style="margin: 0 0 8px; font-size: 16px;">Join</h3>
+                    <h3 style="margin: 0 0 8px; font-size: 16px;">Sign Up</h3>
                     <p class="muted" style="font-size: 13px; margin: 0;">Create your member account.</p>
                 </div>
-                <div style="display:flex; align-items:center; justify-content:center; font-size:20px; color:var(--blue);">→</div>
                 <div class="card" style="text-align: center; padding: 24px;">
                     <div class="step-badge" style="margin: 0 auto 12px;">2</div>
-                    <h3 style="margin: 0 0 8px; font-size: 16px;">Choose</h3>
-                    <p class="muted" style="font-size: 13px; margin: 0;">Select a trainer during checkout.</p>
+                    <h3 style="margin: 0 0 8px; font-size: 16px;">Choose Plan</h3>
+                    <p class="muted" style="font-size: 13px; margin: 0;">Pick daily, weekly, or monthly membership packages.</p>
                 </div>
-                <div style="display:flex; align-items:center; justify-content:center; font-size:20px; color:var(--blue);">→</div>
-            </div>
-            <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
                 <div class="card" style="text-align: center; padding: 24px;">
                     <div class="step-badge" style="margin: 0 auto 12px;">3</div>
-                    <h3 style="margin: 0 0 8px; font-size: 16px;">Connect</h3>
-                    <p class="muted" style="font-size: 13px; margin: 0;">Start chat with your trainer.</p>
+                    <h3 style="margin: 0 0 8px; font-size: 16px;">Pay Now</h3>
+                    <p class="muted" style="font-size: 13px; margin: 0;">M-PESA instant or manual payment approval.</p>
                 </div>
-                <div style="display:flex; align-items:center; justify-content:center; font-size:20px; color:var(--blue);">→</div>
+            </div>
+            <div class="flow-bottom">
                 <div class="card" style="text-align: center; padding: 24px;">
                     <div class="step-badge" style="margin: 0 auto 12px;">4</div>
-                    <h3 style="margin: 0 0 8px; font-size: 16px;">Transform</h3>
-                    <p class="muted" style="font-size: 13px; margin: 0;">Follow custom plans and progress.</p>
+                    <h3 style="margin: 0 0 8px; font-size: 16px;">Start Training</h3>
+                    <p class="muted" style="font-size: 13px; margin: 0;">Access workouts, diet plans, attendance, cafe, and trainer support.</p>
                 </div>
             </div>
         </div>

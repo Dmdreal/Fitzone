@@ -36,17 +36,17 @@
         </div>
         <div class="grid three">
             <article class="card stat-card">
-                <div class="icon" style="background:linear-gradient(135deg, #dbeafe, #bfdbfe); color:var(--blue)">📦</div>
+                <div class="icon rotating-icon" data-icons="📦,🎒,💼" style="background:linear-gradient(135deg, #dbeafe, #bfdbfe); color:var(--blue)">📦</div>
                 <h3>Simple Onboarding</h3>
                 <p class="muted">Package selection → Trainer choice → Payment → Instant activation. No confusion, no delays.</p>
             </article>
             <article class="card stat-card">
-                <div class="icon" style="background:linear-gradient(135deg, #dcfce7, #bbf7d0); color:var(--green)">✅</div>
+                <div class="icon rotating-icon" data-icons="✅,✔️,🟢" style="background:linear-gradient(135deg, #dcfce7, #bbf7d0); color:var(--green)">✅</div>
                 <h3>Verified Payments</h3>
                 <p class="muted">M-PESA auto-confirms instantly. Cash, bank, PayPal, and card payments wait for admin approval.</p>
             </article>
             <article class="card stat-card">
-                <div class="icon" style="background:linear-gradient(135deg, #ffedd5, #fed7aa); color:var(--amber)">🔓</div>
+                <div class="icon rotating-icon" data-icons="🔓,🔑,🛡️" style="background:linear-gradient(135deg, #ffedd5, #fed7aa); color:var(--amber)">🔓</div>
                 <h3>Instant Unlocks</h3>
                 <p class="muted">After payment confirmation, workouts, diet plans, chat, attendance, and member areas activate automatically.</p>
             </article>
@@ -64,9 +64,27 @@
             <p>From membership management to daily operations, Fitzone handles the details so you focus on training.</p>
         </div>
         <div class="grid three">
-            <article class="card image-card"><img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=900&q=80" alt="Strength training"><div><h3>💪 Strength Floor</h3><p class="muted">Free weights, machines, and coach-led routines designed for every experience level.</p></div></article>
-            <article class="card image-card"><img src="https://images.unsplash.com/photo-1571019613914-85f342c6a11e?auto=format&fit=crop&w=900&q=80" alt="Group class"><div><h3>🤸 Fitness Classes</h3><p class="muted">Conditioning, mobility, core work, and focused group sessions daily.</p></div></article>
-            <article class="card image-card"><img src="https://images.unsplash.com/photo-1605296867304-46d5465a13f1?auto=format&fit=crop&w=900&q=80" alt="Personal training"><div><h3>👨‍🏫 Personal Training</h3><p class="muted">Choose your trainer during signup and maintain direct communication anytime.</p></div></article>
+            <article class="card image-card">
+                <iframe class="video-frame" src="https://www.youtube.com/embed/4DB6910HGr4?autoplay=1&mute=1&loop=1&playlist=4DB6910HGr4&controls=0&rel=0&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" style="width:100%; height:260px; border:0; background:transparent; pointer-events:none;"></iframe>
+                <div>
+                    <h3>💪 Strength Floor</h3>
+                    <p class="muted">Free weights, machines, and coach-led routines designed for every experience level.</p>
+                </div>
+            </article>
+            <article class="card image-card">
+                <iframe class="video-frame" src="https://www.youtube.com/embed/VqXLFffiU2I?autoplay=1&mute=1&loop=1&playlist=VqXLFffiU2I&controls=0&rel=0&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" style="width:100%; height:260px; border:0; background:transparent; pointer-events:none;"></iframe>
+                <div>
+                    <h3>🤸 Fitness Classes</h3>
+                    <p class="muted">Conditioning, mobility, core work, and focused group sessions daily.</p>
+                </div>
+            </article>
+            <article class="card image-card">
+                <iframe class="video-frame" src="https://www.youtube.com/embed/TbY_5mOBZlU?autoplay=1&mute=1&loop=1&playlist=TbY_5mOBZlU&controls=0&rel=0&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media" style="width:100%; height:260px; border:0; background:transparent; pointer-events:none;"></iframe>
+                <div>
+                    <h3>👨‍🏫 Personal Training</h3>
+                    <p class="muted">Choose your trainer during signup and maintain direct communication anytime.</p>
+                </div>
+            </article>
         </div>
     </div>
 </section>
@@ -76,19 +94,19 @@
         <div class="section-head">
             <h2 style="margin-bottom: 28px;">How Fitzone Works</h2>
         </div>
-        <div class="grid" style="grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: stretch;">
+        <div class="steps-grid">
             <div class="card" style="text-align: center; padding: 30px 16px;">
                 <div class="step-badge" style="margin: 0 auto 12px;">1</div>
                 <h3 style="margin: 0 0 8px;">Sign Up</h3>
                 <p class="muted" style="font-size: 13px;">Create your account with email or phone number.</p>
             </div>
-            <div style="display:flex; align-items:center; justify-content:center; font-size:24px; color:var(--blue);">→</div>
+            <div class="arrow">→</div>
             <div class="card" style="text-align: center; padding: 30px 16px;">
                 <div class="step-badge" style="margin: 0 auto 12px;">2</div>
                 <h3 style="margin: 0 0 8px;">Choose Plan</h3>
                 <p class="muted" style="font-size: 13px;">Pick daily, weekly, or monthly membership packages.</p>
             </div>
-            <div style="display:flex; align-items:center; justify-content:center; font-size:24px; color:var(--blue);">→</div>
+            <div class="arrow">→</div>
             <div class="card" style="text-align: center; padding: 30px 16px;">
                 <div class="step-badge" style="margin: 0 auto 12px;">3</div>
                 <h3 style="margin: 0 0 8px;">Pay Now</h3>

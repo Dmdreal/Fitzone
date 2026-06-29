@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login - Fitzone</title>
     <style>
         :root {
@@ -351,8 +352,6 @@
                         </div>
                         <button type="submit" class="btn-primary">Sign in</button>
                     </form>
-                    <p class="or-divider">OR</p>
-                    <button type="button" class="btn-secondary"><span class="google-mark">G</span>Sign in with Google</button>
                 </div>
                 <p class="alt-link">Don't have an account? <a href="{{ route('register') }}">Sign up</a></p>
             </div>

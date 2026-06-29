@@ -82,13 +82,19 @@
         a { color: inherit; text-decoration: none; }
         img, svg, video, canvas, audio { max-width: 100%; }
         .shell { min-height: 100vh; display: grid; grid-template-columns: 230px minmax(0, 1fr); }
-        .menu-toggle { display: none; border: 0; width: 42px; height: 42px; border-radius: 8px; background: #fff; color: var(--ink); cursor: pointer; box-shadow: 0 8px 22px rgba(15, 23, 42, .08); position: relative; z-index: 30; }
+        .menu-toggle { display: none; border: 0; width: 42px; height: 42px; border-radius: 8px; background: #fff; color: var(--ink); cursor: pointer; box-shadow: 0 8px 22px rgba(15, 23, 42, .08); position: relative; z-index: 60; }
         .menu-toggle span { display: block; width: 20px; height: 2px; margin: 5px auto; border-radius: 999px; background: currentColor; }
-        .sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, .46); z-index: 18; pointer-events: none; }
+        .sidebar-backdrop { opacity: 0; display: block; position: fixed; inset: 0; background: rgba(15, 23, 42, .46); z-index: 50; pointer-events: none; transition: opacity .18s ease; }
         .sidebar { background: linear-gradient(180deg, #162943, #0e1d31); color: #dbeafe; padding: 24px 18px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+        .sidebar { -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
         .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; color: #fff; font-weight: 900; line-height: 1.1; }
         .brand span:last-child { min-width: 0; }
-        .brand-mark { width: 38px; height: 38px; border-radius: 8px; background: var(--red); display: grid; place-items: center; }
+        .brand-mark { width: 42px; height: 42px; border-radius: 8px; background: var(--red); display: grid; place-items: center; overflow: hidden; position: relative; }
+        .brand-mark .brand-icon { position: absolute; inset: 0; display: grid; place-items: center; font-size: 18px; opacity: 0; animation: logoCycle 6s infinite ease-in-out; }
+        .brand-mark .brand-icon:nth-child(1) { animation-delay: 0s; }
+        .brand-mark .brand-icon:nth-child(2) { animation-delay: 2s; }
+        .brand-mark .brand-icon:nth-child(3) { animation-delay: 4s; }
+        @keyframes logoCycle { 0%, 16.66% { opacity: 1; transform: translateY(0); } 25%, 100% { opacity: 0; transform: translateY(-8px); } }
         .nav-link { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 8px; margin-bottom: 6px; color: #cbd5e1; font-size: 14px; transition: transform .18s ease, background .18s ease, color .18s ease; }
         .nav-link:hover, .nav-link.active { background: linear-gradient(90deg, #1f6feb, #3b82f6); color: #fff; transform: translateX(4px); }
         .nav-icon { width: 26px; height: 26px; flex: 0 0 26px; border-radius: 7px; display: grid; place-items: center; background: rgba(255,255,255,.12); color: #fff; font-size: 12px; font-weight: 900; }
@@ -185,10 +191,13 @@
         @media (max-width: 1100px) {
             .shell { grid-template-columns: minmax(0, 1fr); }
             .menu-toggle { display: inline-block; }
-            .sidebar { position: fixed; inset: 0 auto 0 0; width: min(280px, 86vw); height: 100vh; z-index: 20; transform: translateX(-100%); transition: transform .2s ease; will-change: transform; }
+            /* Hide the hamburger while the off-canvas menu is open to avoid overlap */
+            body.menu-open .menu-toggle { display: none; }
+            .sidebar { position: fixed; left: 0; top: 0; width: min(280px, 86vw); height: 100vh; z-index: 55; transform: translateX(-110%); transition: transform .2s ease; will-change: transform; }
+            body.menu-open .main { overflow: hidden; }
             body.menu-open { overflow: hidden; }
             body.menu-open .sidebar { transform: translateX(0); }
-            body.menu-open .sidebar-backdrop { display: block; pointer-events: auto; }
+            body.menu-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
             .two { grid-template-columns: minmax(0, 1fr); }
             .chat-shell { grid-template-columns: minmax(0, 1fr); }
             .chat-room { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
@@ -229,7 +238,14 @@
     <div class="shell">
         <div class="sidebar-backdrop" data-close-menu></div>
         <aside class="sidebar">
-            <a class="brand" href="{{ $dashboardHref }}"><span class="brand-mark">G</span><span>GYM<br><small>FITNESS</small></span></a>
+            <a class="brand" href="{{ $dashboardHref }}">
+                <span class="brand-mark">
+                    <span class="brand-icon">🏋️</span>
+                    <span class="brand-icon">🥇</span>
+                    <span class="brand-icon">💪</span>
+                </span>
+                <span>GYM<br><small>FITNESS</small></span>
+            </a>
             @foreach ($nav as [$label, $href, $icon])
                 <a class="nav-link {{ request()->url() === $href ? 'active' : '' }}" href="{{ $href }}"><span class="nav-icon">{{ $icon }}</span>{{ $label }}</a>
             @endforeach
@@ -301,6 +317,12 @@
                 if (event.key === 'Escape') {
                     setMenu(false);
                 }
+            });
+
+            document.querySelectorAll('.video-frame').forEach((frame) => {
+                const show = () => frame.classList.add('ready');
+                frame.addEventListener('load', show);
+                setTimeout(show, 1200);
             });
         });
     </script>
