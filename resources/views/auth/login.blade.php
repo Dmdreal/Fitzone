@@ -1,18 +1,18 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Login - Fitzone</title>
+    <title>Login - Ironside</title>
     <style>
         :root {
-            --bg-dark: #081422;
-            --panel: #0f1c34;
+            --bg-dark: #050605;
+            --panel: #111711;
             --panel-soft: rgba(255,255,255,.08);
-            --text: #eef2ff;
-            --muted: #a3b8d7;
-            --accent: #236fe8;
+            --text: #f7f9f1;
+            --muted: #d6ddcb;
+            --accent: #9acb00;
             --border: rgba(255,255,255,.12);
         }
         * { box-sizing: border-box; }
@@ -24,7 +24,7 @@
             color: var(--text);
             background: radial-gradient(circle at 12% 18%, rgba(35,111,232,.18), transparent 18%),
                         radial-gradient(circle at 92% 20%, rgba(244,63,70,.12), transparent 16%),
-                        linear-gradient(180deg, #081422 0%, #07111f 48%, #06101a 100%);
+                        linear-gradient(180deg, #050605 0%, #0a0d10 48%, #111711 100%);
             overflow-x: hidden;
         }
         body:before {
@@ -39,8 +39,8 @@
             content: "";
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 20% 20%, rgba(35,111,232,.14), transparent 26%),
-                        radial-gradient(circle at 80% 26%, rgba(244,63,70,.16), transparent 24%);
+            background: radial-gradient(circle at 20% 20%, rgba(154,203,0,.14), transparent 26%),
+                        radial-gradient(circle at 80% 26%, rgba(154,203,0,.12), transparent 24%);
             pointer-events: none;
         }
         a { color: inherit; text-decoration: none; }
@@ -57,7 +57,7 @@
             grid-template-columns: 1fr 1fr;
             border-radius: 26px;
             overflow: hidden;
-            background: rgba(9,18,36,.95);
+            background: rgba(5,6,5,.96);
             border: 1px solid rgba(255,255,255,.12);
             box-shadow: 0 30px 90px rgba(0,0,0,.4);
         }
@@ -69,13 +69,13 @@
             display: grid;
             gap: 24px;
             position: relative;
-            background: linear-gradient(180deg, rgba(12,22,42,.98), rgba(10,16,30,.95));
+            background: linear-gradient(180deg, rgba(17,23,17,.98), rgba(5,6,5,.95));
         }
         .form-panel:before {
             content: "";
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at top left, rgba(35,111,232,.14), transparent 24%);
+            background: radial-gradient(circle at top left, rgba(154,203,0,.14), transparent 24%);
             pointer-events: none;
         }
         .brand-row {
@@ -205,9 +205,9 @@
             gap: 10px;
         }
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent), #3b82f6);
+            background: linear-gradient(135deg, var(--accent), #c5f200);
             color: #fff;
-            box-shadow: 0 18px 32px rgba(35,111,232,.28);
+            box-shadow: 0 18px 32px rgba(154,203,0,.24);
         }
         .btn-secondary {
             background: rgba(255,255,255,.08);
@@ -311,15 +311,15 @@
         <section class="login-box">
             <div class="form-panel">
                 <div class="brand-row">
-                    <div class="brand-mark">F</div>
+                    <div class="brand-mark">I</div>
                     <div class="brand-text">
-                        <strong>Fitzone</strong>
+                        <strong>Ironside</strong>
                         <small>Smart Gym</small>
                     </div>
                 </div>
                 <div class="title-block">
-                    <h1>FitPulse</h1>
-                    <p class="subtitle">Sign in to your account and manage gym access, payments, attendance, café orders, and trainer workflows in one place.</p>
+                    <h1>Ironside</h1>
+                    <p class="subtitle">Sign in to your account and manage gym access, payments, attendance, caf� orders, and trainer workflows in one place.</p>
                 </div>
 
                 @if ($errors->any())
@@ -332,16 +332,16 @@
                         <div class="input-group">
                             <label for="email">Email</label>
                             <div class="input-row">
-                                <span>✉</span>
-                                <input id="email" name="email" type="email" value="{{ old('email', 'member@fitzone.test') }}" required autofocus autocomplete="email" placeholder="Enter your email">
+                                <span>?</span>
+                                <input id="email" name="email" type="email" value="{{ old('email', 'member@ironside.test') }}" required autofocus autocomplete="email" placeholder="Enter your email">
                             </div>
                         </div>
                         <div class="input-group">
                             <label for="password">Password</label>
                             <div class="input-row password">
-                                <span>🔒</span>
+                                <span>??</span>
                                 <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Enter your password">
-                                <span>👁</span>
+                                <span>??</span>
                             </div>
                         </div>
                         <div class="actions-row">
@@ -358,7 +358,7 @@
             <div class="image-panel">
                 <div class="image-content">
                     <span class="image-badge">High Intensity</span>
-                    <h2 class="image-title">Train harder with FitPulse.</h2>
+                    <h2 class="image-title">Train harder with Ironside.</h2>
                     <p class="image-copy">A modern, responsive login experience that fits the look of your gym management platform.</p>
                 </div>
             </div>

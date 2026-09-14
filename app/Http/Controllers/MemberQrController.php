@@ -41,7 +41,7 @@ class MemberQrController extends Controller
         ];
 
         if ($request->boolean('download')) {
-            $headers['Content-Disposition'] = 'attachment; filename="'.$member->member_number.'-fitzone-qr.svg"';
+            $headers['Content-Disposition'] = 'attachment; filename="'.$member->member_number.'-Ironside-qr.svg"';
         }
 
         return response($result->getString(), 200, $headers);

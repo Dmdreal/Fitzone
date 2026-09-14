@@ -1,6 +1,6 @@
 @extends('site.layout')
 
-@section('title', 'Services - Fitzone Gym')
+@section('title', 'Services - Ironside')
 
 @section('content')
 <header class="page-title">
@@ -141,12 +141,12 @@
                     <div class="icon" style="background:linear-gradient(135deg, #ede9fe, #ddd6fe); color:var(--blue)">🤝</div>
                     <div>
                         <h3 style="margin: 0 0 6px;">Community Access</h3>
-                        <p class="muted">Connect with other members, share wins, and stay motivated as part of the Fitzone family.</p>
+                        <p class="muted">Connect with other members, share wins, and stay motivated as part of the Ironside family.</p>
                     </div>
                 </div>
             </div>
             <article class="card">
-                <h3>Why Members Love Fitzone</h3>
+                <h3>Why Members Love Ironside</h3>
                 <blockquote class="testimonial">
                     <p><strong>"Everything is clear."</strong> I know exactly when my membership ends, when payments are approved, and what my trainer is planning. No surprises.</p>
                     <div class="author">— Alex P.</div>
@@ -165,7 +165,7 @@
 </section>
 
 <div class="cta-banner">
-    <h2>Start Using Fitzone Today</h2>
+    <h2>Start Using Ironside Today</h2>
     <p>Access all services immediately after payment confirmation and begin your fitness transformation.</p>
     <div class="hero-actions" style="justify-content: center;">
         <a class="btn" style="background:#fff; color:var(--blue)" href="{{ auth()->check() ? route('client.packages') : route('login') }}">Choose a Plan</a>

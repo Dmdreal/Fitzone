@@ -4,20 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Register - Fitzone</title>
+    <title>Register - Ironside</title>
     <style>
         * { box-sizing: border-box; }
-        body { margin: 0; min-width: 320px; min-height: 100vh; display: grid; place-items: center; padding: 16px; background: #eef2f7; font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #0f172a; }
-        .auth { width: min(720px, calc(100% - 28px)); background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 28px; box-shadow: 0 20px 50px rgba(15,23,42,.09); }
+        body { margin: 0; min-width: 320px; min-height: 100vh; display: grid; place-items: center; padding: 16px; background: #f7f9f1; font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #0a0d10; }
+        .auth { width: min(720px, calc(100% - 28px)); background: #fff; border: 1px solid #dfe6cf; border-radius: 8px; padding: 28px; box-shadow: 0 20px 50px rgba(15,23,42,.09); }
         h1 { margin: 0 0 6px; }
-        p { color: #64748b; margin: 0 0 20px; }
+        p { color: #5f6872; margin: 0 0 20px; }
         label { display: grid; gap: 7px; margin-bottom: 14px; font-weight: 800; font-size: 13px; }
-        input, select, textarea { width: 100%; border: 1px solid #e2e8f0; border-radius: 7px; padding: 12px; font: inherit; }
+        input, select, textarea { width: 100%; border: 1px solid #dfe6cf; border-radius: 7px; padding: 12px; font: inherit; }
         textarea { min-height: 92px; resize: vertical; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; }
-        .panel { border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin: 0 0 14px; background: #f8fafc; }
+        .panel { border: 1px solid #dfe6cf; border-radius: 8px; padding: 14px; margin: 0 0 14px; background: #fbfcf6; }
         .hidden { display: none; }
-        button { border: 0; border-radius: 7px; padding: 12px 16px; background: #1263e6; color: #fff; font-weight: 900; cursor: pointer; text-align: center; }
+        button { border: 0; border-radius: 7px; padding: 12px 16px; background: #9acb00; color: #0a0d10; font-weight: 900; cursor: pointer; text-align: center; }
         .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
         .error { color: #b91c1c; background: #fee2e2; border-radius: 7px; padding: 10px 12px; margin-bottom: 14px; }
         @media (max-width: 430px) { .auth { width: 100%; padding: 20px; } h1 { font-size: 24px; } .row, button { width: 100%; } }
@@ -26,7 +26,7 @@
 <body>
     <form class="auth" method="POST" action="{{ route('register.store') }}">
         @csrf
-        <h1>Create Fitzone Account</h1>
+        <h1>Create Ironside Account</h1>
         <p>Choose client, trainer, or gym owner. Discovery details are saved during registration.</p>
         @if ($errors->any())
             <div class="error">{{ $errors->first() }}</div>
@@ -46,7 +46,7 @@
             <label>Password <input name="password" type="password" required></label>
             <label>Confirm Password <input name="password_confirmation" type="password" required></label>
         </div>
-        <label>Bio <textarea name="bio" placeholder="Tell people what you offer or what you want from Fitzone.">{{ old('bio') }}</textarea></label>
+        <label>Bio <textarea name="bio" placeholder="Tell people what you offer or what you want from Ironside.">{{ old('bio') }}</textarea></label>
         <section class="panel hidden" data-member-panel>
             <div class="grid">
                 <label>Location <input id="reg-location" name="location" value="{{ old('location') }}" placeholder="Nairobi CBD, Westlands, Kilimani..."></label>
@@ -132,7 +132,7 @@
             <div class="grid">
                 <label>Location <input name="location" value="{{ old('location') }}" placeholder="Nairobi CBD, Westlands, Kilimani..."></label>
                 <label>Nearby Locations <input name="nearby_locations" value="{{ old('nearby_locations') }}" placeholder="Parklands, Lavington, Ngara..."></label>
-                <label>Gym Name <input name="gym_name" value="{{ old('gym_name') }}" placeholder="Fitzone Westlands"></label>
+                <label>Gym Name <input name="gym_name" value="{{ old('gym_name') }}" placeholder="Ironside Westlands"></label>
                 <label>Gym Services <textarea name="gym_services" placeholder="Personal training, boxing, sauna, cafe, group classes...">{{ old('gym_services') }}</textarea></label>
             </div>
         </section>

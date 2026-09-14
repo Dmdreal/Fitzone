@@ -1,6 +1,6 @@
 @extends('site.layout')
 
-@section('title', 'Our Trainers - Fitzone Gym')
+@section('title', 'Our Trainers - Ironside')
 
 @section('content')
 <header class="page-title">

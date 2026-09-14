@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Checkout - Fitzone')
+@section('title', 'Checkout - Ironside')
 
 @section('content')
 <h1>Payment Checkout</h1>

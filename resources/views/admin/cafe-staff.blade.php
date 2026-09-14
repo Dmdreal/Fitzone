@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Manage Cafe Staff - Fitzone')
+@section('title', 'Manage Cafe Staff - Ironside')
 
 @section('content')
 <h1>Manage Cafe Staff</h1>
@@ -17,7 +17,7 @@
             @csrf
             <div class="form-grid">
                 <label>Full Name <input name="name" value="{{ old('name') }}" placeholder="e.g., John Mwangi" required></label>
-                <label>Email <input type="email" name="email" value="{{ old('email') }}" placeholder="cafe@fitzone.test" required></label>
+                <label>Email <input type="email" name="email" value="{{ old('email') }}" placeholder="cafe@Ironside.test" required></label>
                 <label>Password <input type="password" name="password" required minlength="8" placeholder="Min 8 characters"></label>
             </div>
             @if ($errors->any())

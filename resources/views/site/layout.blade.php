@@ -13,19 +13,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Fitzone Gym')</title>
+    <title>@yield('title', 'Ironside')</title>
     <style>
         :root {
-            --ink: #0b1324;
-            --muted: #637794;
-            --line: #e1e8f2;
-            --green: #13a047;
+            --ink: #0a0d10;
+            --muted: #5f6872;
+            --line: #dfe6cf;
+            --green: #9acb00;
             --red: #f43f46;
-            --blue: #236fe8;
-            --blue-deep: #123f8c;
+            --blue: #9acb00;
+            --blue-deep: #111711;
             --amber: #f7a31a;
             --panel: #ffffff;
-            --soft: #edf3f9;
+            --soft: #f7f9f1;
         }
         * { box-sizing: border-box; }
         html { min-width: 320px; scroll-behavior: smooth; }
@@ -35,7 +35,7 @@
         .site-nav { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.95); border-bottom: 1px solid var(--line); backdrop-filter: blur(14px); box-shadow: 0 10px 28px rgba(13,31,54,.05); }
         .nav-inner { width: min(1180px, calc(100% - 32px)); margin: 0 auto; min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
         .brand { display: flex; align-items: center; gap: 10px; font-weight: 950; }
-        .brand-mark { width: 56px; height: 42px; border-radius: 8px; background: var(--red); color: #fff; display: grid; place-items: center; font-size: 20px; transition: transform .3s ease, opacity .2s ease; overflow: hidden; position: relative; }
+        .brand-mark { width: 56px; height: 42px; border-radius: 8px; background: var(--green); color: #0a0d10; display: grid; place-items: center; font-size: 20px; transition: transform .3s ease, opacity .2s ease; overflow: hidden; position: relative; }
         .brand-mark:hover { transform: scale(1.05); }
         .brand-mark .brand-icon { position: absolute; inset: 0; display: grid; place-items: center; font-size: 20px; opacity: 0; animation: logoCycle 6s infinite ease-in-out; }
         .brand-mark .brand-icon:nth-child(1) { animation-delay: 0s; }
@@ -43,18 +43,21 @@
         .brand-mark .brand-icon:nth-child(3) { animation-delay: 4s; }
         @keyframes logoCycle { 0%, 16.66% { opacity: 1; transform: translateY(0); } 25%, 100% { opacity: 0; transform: translateY(-8px); } }
         .links { display: flex; align-items: center; gap: 18px; color: #334155; font-weight: 800; font-size: 14px; }
-        .btn { border: 0; border-radius: 7px; padding: 12px 16px; font-weight: 950; color: #fff; background: var(--blue); display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }
+        .btn { border: 0; border-radius: 7px; padding: 12px 16px; font-weight: 950; color: #0a0d10; background: var(--blue); display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }
         .btn.green { background: var(--blue); }
         .btn.ghost { background: #eef2f7; color: #263449; }
-        .hero { min-height: calc(80vh - 76px); display: grid; align-items: end; position: relative; overflow: hidden; color: #fff; background-image: linear-gradient(105deg, rgba(18,41,66,.96), rgba(16,63,143,.78), rgba(35,111,232,.52)), url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1800&q=80"); background-size: cover; background-position: center; }
-        .hero:before, .page-title:before { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, rgba(18,41,66,.94), rgba(16,63,143,.76), rgba(35,111,232,.46)); z-index: 1; }
+        .floating-whatsapp { position: fixed; right: 22px; bottom: 22px; z-index: 30; display: inline-flex; align-items: center; gap: 8px; padding: 7px 13px 7px 8px; border: 1px solid #e6eee8; border-radius: 8px; background: #fff; color: #18c866; box-shadow: 0 8px 22px rgba(0,0,0,.16); font-family: Arial, sans-serif; font-size: 20px; font-weight: 700; transition: transform .2s ease, box-shadow .2s ease; }
+        .floating-whatsapp:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(0,0,0,.22); }
+        .floating-whatsapp .whatsapp-icon { display: block; width: 31px; height: 31px; }
+        .hero { min-height: calc(80vh - 76px); display: grid; align-items: end; position: relative; overflow: hidden; color: #fff; background-image: linear-gradient(105deg, rgba(0,0,0,.95), rgba(10,13,16,.82), rgba(154,203,0,.48)), url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1800&q=80"); background-size: cover; background-position: center; }
+        .hero:before, .page-title:before { content: ""; position: absolute; inset: 0; background: linear-gradient(105deg, rgba(0,0,0,.94), rgba(10,13,16,.76), rgba(154,203,0,.42)); z-index: 1; }
         .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
         .hero-inner, .section-inner { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
         .hero-inner, .page-title .section-inner { position: relative; z-index: 2; }
         .hero-content { width: min(720px, 100%); padding: 80px 0 70px; }
-        .eyebrow { color: #dbeafe; font-weight: 950; text-transform: uppercase; font-size: 12px; letter-spacing: 1.6px; }
+        .eyebrow { color: #c5f200; font-weight: 950; text-transform: uppercase; font-size: 12px; letter-spacing: 1.6px; }
         h1 { margin: 10px 0 16px; font-size: clamp(42px, 7vw, 82px); line-height: .94; letter-spacing: 0; }
-        .hero p { color: #dbeafe; font-size: 18px; line-height: 1.55; width: min(640px, 100%); }
+        .hero p { color: #edf7d2; font-size: 18px; line-height: 1.55; width: min(640px, 100%); }
         .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
         .hero-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: rgba(255,255,255,.18); margin-top: 54px; border: 1px solid rgba(255,255,255,.18); border-radius: 8px; overflow: hidden; }
         .hero-strip div { padding: 18px; background: rgba(2,6,23,.4); }
@@ -98,13 +101,13 @@
         .testimonial { border-left: 4px solid var(--blue); padding-left: 16px; }
         .testimonial .author { color: var(--muted); font-size: 13px; margin-top: 10px; }
         .step-badge { background: linear-gradient(135deg, var(--blue-deep), var(--blue)); color: #fff; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 950; font-size: 18px; }
-        .page-title { position: relative; overflow: hidden; padding: 76px 0; background: linear-gradient(135deg, #132942 0%, #103f8f 48%, #1f66dc 100%); color: #fff; }
-        .page-title p { color: #dbeafe; max-width: 720px; }
+        .page-title { position: relative; overflow: hidden; padding: 76px 0; background: linear-gradient(135deg, #000 0%, #111711 54%, #9acb00 100%); color: #fff; }
+        .page-title p { color: #edf7d2; max-width: 720px; }
         .contact-card input, .contact-card textarea, .contact-card select { width: 100%; border: 1px solid var(--line); border-radius: 7px; padding: 12px; font: inherit; }
         .contact-card textarea { min-height: 130px; resize: vertical; }
         label { display: grid; gap: 7px; font-size: 12px; font-weight: 900; color: #334155; }
         .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-        .footer { padding: 56px 0 32px; color: #cbd5e1; background: #08152f; border-top: 1px solid rgba(255,255,255,.06); }
+        .footer { padding: 56px 0 32px; color: #d6ddcb; background: #050605; border-top: 1px solid rgba(255,255,255,.06); }
         .footer-inner { width: min(1180px, calc(100% - 48px)); margin: 0 auto; display: grid; grid-template-columns: minmax(240px, 320px) repeat(3, minmax(180px, 1fr)); gap: 28px; padding-bottom: 28px; }
         .footer-brand { display: grid; gap: 18px; }
         .footer-brand p { max-width: 280px; line-height: 1.8; color: #d1d9ea; }
@@ -125,7 +128,7 @@
         .footer-payments { display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap; }
         .payment-card { border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 10px 16px; background: rgba(255,255,255,.03); color: #fff; font-size: 13px; font-weight: 700; letter-spacing: .4px; }
         .footer-copyright { text-align: center; color: #94a3b8; }
-        .cta-banner { background: linear-gradient(135deg, #132942, #236fe8); color: #fff; border-radius: 12px; padding: 40px; text-align: center; margin: 40px 0; }
+        .cta-banner { background: linear-gradient(135deg, #050605, #111711 55%, #9acb00); color: #fff; border-radius: 12px; padding: 40px; text-align: center; margin: 40px 0; }
         .cta-banner h2 { margin: 0 0 12px; font-size: 32px; }
         .cta-banner p { max-width: 600px; margin: 0 auto 20px; opacity: 0.95; }
         .stats-section { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 40px 0; }
@@ -204,7 +207,7 @@
                     <span class="brand-icon">🥇</span>
                     <span class="brand-icon">💪</span>
                 </span>
-                <span>Fitzone<br><small>Smart Gym</small></span>
+                <span>Ironside<br><small>Smart Gym</small></span>
             </a>
             <nav class="links">
                 <a href="{{ route('site.home') }}">Home</a>
@@ -329,10 +332,18 @@
 
     @yield('content')
 
+    <a class="floating-whatsapp" href="https://wa.me/254741511073?text=Hello%20Ironside%2C%20I%27d%20like%20to%20book%20a%20training%20session." target="_blank" rel="noopener noreferrer" aria-label="Chat with Ironside on WhatsApp">
+        <svg class="whatsapp-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.5 11.5a8.5 8.5 0 0 1-12.6 7.4L3.5 20l1.2-4.2A8.5 8.5 0 1 1 20.5 11.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M9 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.6 1.4c.1.3.1.5-.1.7l-.5.6c.6 1.1 1.5 2 2.6 2.6l.6-.5c.2-.2.4-.2.7-.1l1.4.6c.3.1.4.3.4.5v.5c0 .3 0 .5-.4.7-.4.2-1 .3-1.6.1-2.2-.6-4.8-3.2-5.5-5.5-.2-.6-.1-1.2.1-1.6Z" fill="currentColor"/>
+        </svg>
+        <span>WhatsApp</span>
+    </a>
+
     <footer class="footer">
         <div class="footer-inner">
             <div class="footer-brand">
-                <a class="brand" href="{{ route('site.home') }}"><span class="brand-mark">F</span><span>Fitzone<br><small>Smart Gym</small></span></a>
+                <a class="brand" href="{{ route('site.home') }}"><span class="brand-mark">I</span><span>Ironside<br><small>Smart Gym</small></span></a>
                 <p>Smart gym management for training, payments, attendance, and member engagement.</p>
                 <div class="footer-social">
                     <a href="#" aria-label="Facebook">f</a>
@@ -352,12 +363,12 @@
                 <h3>Support</h3>
                 <a class="link-item" href="{{ route('site.about') }}">About</a>
                 <a class="link-item" href="{{ route('site.contact') }}">Contact</a>
-                <a class="link-item" href="mailto:fitzone@gmail.com">Email Us</a>
+                <a class="link-item" href="mailto:ironside@gmail.com">Email Us</a>
                 <a class="link-item" href="#">FAQs</a>
             </div>
             <div class="footer-section">
                 <h3>Contact</h3>
-                <p>+254746899732<br>Fitzone@gmail.com<br>123 Fitness Street, Nairobi, Kenya</p>
+                <p>+254746899732<br>Ironside@gmail.com<br>123 Fitness Street, Nairobi, Kenya</p>
             </div>
         </div>
         <div class="footer-bottom">
@@ -368,7 +379,7 @@
                     <p>We value your privacy and security.</p>
                 </div>
             </div>
-            <p class="footer-copyright">&copy; 2026 Fitzone Gym. All rights reserved. | Smart gym platform built for modern fitness clubs.</p>
+            <p class="footer-copyright">&copy; 2026 Ironside. All rights reserved. | Smart gym platform built for modern fitness clubs.</p>
             <div class="footer-payments">
                 <span class="payment-card">VISA</span>
                 <span class="payment-card">Mastercard</span>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Progress Tracking - Fitzone')
+@section('title', 'Progress Tracking - Ironside')
 
 @section('content')
 <h1>Progress Tracking</h1>

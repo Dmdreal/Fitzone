@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'All Chats - Fitzone')
+@section('title', 'All Chats - Ironside')
 
 @section('content')
 <h1>All Chats</h1>
@@ -52,7 +52,7 @@
                     <article class="message">
                         <div class="message-head">
                             <span class="message-avatar">F</span>
-                            <span class="message-meta"><strong>Fitzone</strong><small>System - Ready now</small></span>
+                            <span class="message-meta"><strong>Ironside</strong><small>System - Ready now</small></span>
                         </div>
                         <div class="message-body">No messages yet.</div>
                     </article>

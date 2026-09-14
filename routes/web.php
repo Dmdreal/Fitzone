@@ -35,7 +35,7 @@ Route::post('/contact', function (Request $request) {
         'message' => ['required', 'string', 'max:1000'],
     ]);
 
-    return back()->with('status', 'Message received. Fitzone will contact you soon.');
+    return back()->with('status', 'Message received. Ironside will contact you soon.');
 })->name('site.contact.store');
 
 Route::get('/member-card/{token}', [MemberQrController::class, 'show'])->name('members.qr.show');

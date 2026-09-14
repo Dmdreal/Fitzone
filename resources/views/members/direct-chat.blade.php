@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Member Chat - Fitzone')
+@section('title', 'Member Chat - Ironside')
 
 @section('content')
 <h1>Direct Chat</h1>
@@ -57,7 +57,7 @@
                 <article class="message">
                     <div class="message-head">
                         <span class="message-avatar">F</span>
-                        <span class="message-meta"><strong>Fitzone</strong><small>System</small></span>
+                        <span class="message-meta"><strong>Ironside</strong><small>System</small></span>
                     </div>
                     <div class="message-body">No messages yet. Start the conversation.</div>
                 </article>

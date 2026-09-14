@@ -1,6 +1,6 @@
 @extends('site.layout')
 
-@section('title', 'Contact Fitzone - Get in Touch')
+@section('title', 'Contact Ironside - Get in Touch')
 
 @section('content')
 <header class="page-title">
@@ -16,8 +16,8 @@
 <section>
     <div class="section-inner grid two">
         <article class="card">
-            <h2 style="display: flex; gap: 10px; align-items: center;">📍 Visit Fitzone Gym</h2>
-            <p class="muted" style="margin: 16px 0;">Fitzone Gym, Nairobi<br>Open Monday-Sunday for members and staff-managed training sessions.</p>
+            <h2 style="display: flex; gap: 10px; align-items: center;">📍 Visit Ironside</h2>
+            <p class="muted" style="margin: 16px 0;">Ironside, Nairobi<br>Open Monday-Sunday for members and staff-managed training sessions.</p>
             
             <div class="grid" style="margin-top: 24px; gap: 20px;">
                 <div>
@@ -26,7 +26,7 @@
                 </div>
                 <div>
                     <strong style="display: block; margin-bottom: 6px;">📧 Email</strong>
-                    <p class="muted" style="margin: 0;">hello@fitzone.test<br><small>Responded within 2 hours</small></p>
+                    <p class="muted" style="margin: 0;">hello@Ironside.test<br><small>Responded within 2 hours</small></p>
                 </div>
             </div>
 
@@ -111,7 +111,7 @@
                 </article>
                 <article class="card">
                     <h3 style="margin: 0 0 8px;">What if I have technical issues?</h3>
-                    <p class="muted" style="margin: 0; font-size: 14px;">Email support@fitzone.test or call our tech team. We respond quickly to app issues and login problems.</p>
+                    <p class="muted" style="margin: 0; font-size: 14px;">Email support@Ironside.test or call our tech team. We respond quickly to app issues and login problems.</p>
                 </article>
             </div>
         </div>
@@ -125,7 +125,7 @@
             <article class="card" style="text-align: center;">
                 <div class="icon" style="background:linear-gradient(135deg, #dbeafe, #bfdbfe); color:var(--blue); margin:0 auto">📧</div>
                 <h3>Email</h3>
-                <p class="muted">hello@fitzone.test</p>
+                <p class="muted">hello@Ironside.test</p>
                 <p style="font-size: 12px; color: var(--muted);">Response within 2 hours</p>
             </article>
             <article class="card" style="text-align: center;">
@@ -137,7 +137,7 @@
             <article class="card" style="text-align: center;">
                 <div class="icon" style="background:linear-gradient(135deg, #ffedd5, #fed7aa); color:var(--amber); margin:0 auto">📍</div>
                 <h3>Visit</h3>
-                <p class="muted">Fitzone Gym, Nairobi</p>
+                <p class="muted">Ironside, Nairobi</p>
                 <p style="font-size: 12px; color: var(--muted);">Walk-ins welcome daily</p>
             </article>
         </div>
@@ -148,7 +148,7 @@
     <h2>Need Help Getting Started?</h2>
     <p>Reach out to our support team today. We're happy to answer questions and help you choose the right membership plan.</p>
     <div class="hero-actions" style="justify-content: center;">
-        <a class="btn" style="background:#fff; color:var(--blue)" href="{{ auth()->check() ? route('client.dashboard') : route('login') }}">Join Fitzone</a>
+        <a class="btn" style="background:#fff; color:var(--blue)" href="{{ auth()->check() ? route('client.dashboard') : route('login') }}">Join Ironside</a>
         <a class="btn ghost" style="background:rgba(255,255,255,.2); color:#fff" href="tel:+254700000000">Call Us</a>
     </div>
 </div>

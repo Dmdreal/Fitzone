@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Profile - Fitzone')
+@section('title', 'Profile - Ironside')
 
 @section('content')
 <h1>Profile</h1>
@@ -122,7 +122,7 @@
             @endif
             @if ($user->role === 'gym_owner')
                 <div class="form-grid" style="margin-top:12px">
-                    <label>Gym Name <input name="gym_name" value="{{ old('gym_name', $user->gym_name) }}" placeholder="Fitzone Westlands"></label>
+                    <label>Gym Name <input name="gym_name" value="{{ old('gym_name', $user->gym_name) }}" placeholder="Ironside Westlands"></label>
                     <label>Gym Services <textarea name="gym_services" placeholder="Personal training, boxing, sauna, cafe, group classes...">{{ old('gym_services', $user->gym_services) }}</textarea></label>
                 </div>
             @endif

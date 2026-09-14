@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Search Members - Fitzone')
+@section('title', 'Search Members - Ironside')
 
 @section('content')
 <h1>Search Members</h1>

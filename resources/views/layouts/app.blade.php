@@ -60,18 +60,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Fitzone')</title>
+    <title>@yield('title', 'Ironside')</title>
     <style>
         :root {
-            --bg: #edf3f9;
+            --bg: #f7f9f1;
             --panel: #fff;
-            --ink: #0b1324;
-            --muted: #637794;
-            --line: #e1e8f2;
-            --nav: #12243b;
-            --blue: #236fe8;
-            --blue-deep: #0f3f8f;
-            --green: #13a047;
+            --ink: #0a0d10;
+            --muted: #5f6872;
+            --line: #dfe6cf;
+            --nav: #050605;
+            --blue: #9acb00;
+            --blue-deep: #111711;
+            --green: #9acb00;
             --red: #f43f46;
             --amber: #f7a31a;
             --violet: #7c3aed;
@@ -85,24 +85,24 @@
         .menu-toggle { display: none; border: 0; width: 42px; height: 42px; border-radius: 8px; background: #fff; color: var(--ink); cursor: pointer; box-shadow: 0 8px 22px rgba(15, 23, 42, .08); position: relative; z-index: 60; }
         .menu-toggle span { display: block; width: 20px; height: 2px; margin: 5px auto; border-radius: 999px; background: currentColor; }
         .sidebar-backdrop { opacity: 0; display: block; position: fixed; inset: 0; background: rgba(15, 23, 42, .46); z-index: 50; pointer-events: none; transition: opacity .18s ease; }
-        .sidebar { background: linear-gradient(180deg, #162943, #0e1d31); color: #dbeafe; padding: 24px 18px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+        .sidebar { background: linear-gradient(180deg, #111711, #050605); color: #edf7d2; padding: 24px 18px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
         .sidebar { -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
         .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; color: #fff; font-weight: 900; line-height: 1.1; }
         .brand span:last-child { min-width: 0; }
-        .brand-mark { width: 42px; height: 42px; border-radius: 8px; background: var(--red); display: grid; place-items: center; overflow: hidden; position: relative; }
+        .brand-mark { width: 42px; height: 42px; border-radius: 8px; background: var(--green); color: #0a0d10; display: grid; place-items: center; overflow: hidden; position: relative; }
         .brand-mark .brand-icon { position: absolute; inset: 0; display: grid; place-items: center; font-size: 18px; opacity: 0; animation: logoCycle 6s infinite ease-in-out; }
         .brand-mark .brand-icon:nth-child(1) { animation-delay: 0s; }
         .brand-mark .brand-icon:nth-child(2) { animation-delay: 2s; }
         .brand-mark .brand-icon:nth-child(3) { animation-delay: 4s; }
         @keyframes logoCycle { 0%, 16.66% { opacity: 1; transform: translateY(0); } 25%, 100% { opacity: 0; transform: translateY(-8px); } }
         .nav-link { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 8px; margin-bottom: 6px; color: #cbd5e1; font-size: 14px; transition: transform .18s ease, background .18s ease, color .18s ease; }
-        .nav-link:hover, .nav-link.active { background: linear-gradient(90deg, #1f6feb, #3b82f6); color: #fff; transform: translateX(4px); }
+        .nav-link:hover, .nav-link.active { background: linear-gradient(90deg, #9acb00, #c5f200); color: #0a0d10; transform: translateX(4px); }
         .nav-icon { width: 26px; height: 26px; flex: 0 0 26px; border-radius: 7px; display: grid; place-items: center; background: rgba(255,255,255,.12); color: #fff; font-size: 12px; font-weight: 900; }
         .main { min-width: 0; width: 100%; max-width: 1540px; padding: 24px; }
         .topbar { display: grid; grid-template-columns: auto minmax(180px, 430px) auto; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 22px; }
         .search-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; width: 100%; min-width: 0; }
         .search { width: 100%; min-width: 0; border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 12px 14px; color: var(--muted); }
-        .search-btn { border: 0; border-radius: 7px; width: 44px; min-height: 42px; padding: 0; background: var(--blue); color: #fff; font-weight: 900; cursor: pointer; }
+        .search-btn { border: 0; border-radius: 7px; width: 44px; min-height: 42px; padding: 0; background: var(--blue); color: #0a0d10; font-weight: 900; cursor: pointer; }
         .profile { min-width: 0; display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; font-size: 13px; }
         .profile-link { min-width: 0; display: flex; align-items: center; gap: 10px; }
         .profile-link strong { max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -129,7 +129,7 @@
         .badge.green { background: #dcfce7; color: #15803d; }
         .badge.red { background: #fee2e2; color: #b91c1c; }
         .badge.amber { background: #fef3c7; color: #b45309; }
-        .btn { border: 0; border-radius: 7px; padding: 10px 14px; font-weight: 900; color: #fff; background: var(--blue); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: transform .18s ease, filter .18s ease, box-shadow .18s ease; box-shadow: 0 8px 18px rgba(18, 99, 230, .16); text-align: center; }
+        .btn { border: 0; border-radius: 7px; padding: 10px 14px; font-weight: 900; color: #0a0d10; background: var(--blue); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: transform .18s ease, filter .18s ease, box-shadow .18s ease; box-shadow: 0 8px 18px rgba(154, 203, 0, .18); text-align: center; }
         .btn:hover { transform: translateY(-1px); filter: brightness(1.04); box-shadow: 0 12px 24px rgba(18, 99, 230, .22); }
         .btn.ghost { background: #f1f5f9; color: #334155; box-shadow: none; }
         .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
@@ -153,8 +153,8 @@
         .flow-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
         .flow-box { border: 1px solid #93c5fd; background: #eff6ff; border-radius: 8px; padding: 10px 16px; font-weight: 900; min-width: 130px; }
         .connector { width: 2px; height: 18px; background: #94a3b8; }
-        .friendly-hero { position: relative; overflow: hidden; background: linear-gradient(135deg, #132942 0%, #103f8f 48%, #1f66dc 100%); color: #fff; }
-        .friendly-hero .muted { color: #dbeafe; }
+        .friendly-hero { position: relative; overflow: hidden; background: linear-gradient(135deg, #050605 0%, #111711 56%, #9acb00 100%); color: #fff; }
+        .friendly-hero .muted { color: #edf7d2; }
         .friendly-hero:after { content: ""; position: absolute; right: -80px; top: -80px; width: 220px; height: 220px; border: 28px solid rgba(255,255,255,.09); border-radius: 50%; animation: breathe 3.4s ease-in-out infinite; }
         .friendly-hero > * { position: relative; z-index: 1; }
         .step-chip { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; background: rgba(255,255,255,.11); color: #fff; font-weight: 900; }
@@ -244,7 +244,7 @@
                     <span class="brand-icon">🥇</span>
                     <span class="brand-icon">💪</span>
                 </span>
-                <span>GYM<br><small>FITNESS</small></span>
+                <span>IRONSIDE<br><small>FITNESS</small></span>
             </a>
             @foreach ($nav as [$label, $href, $icon])
                 <a class="nav-link {{ request()->url() === $href ? 'active' : '' }}" href="{{ $href }}"><span class="nav-icon">{{ $icon }}</span>{{ $label }}</a>

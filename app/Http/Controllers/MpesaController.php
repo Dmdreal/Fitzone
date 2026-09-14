@@ -111,7 +111,7 @@ class MpesaController extends Controller
                     'amount' => $amount,
                     'method' => 'mpesa',
                     'status' => 'pending',
-                    'reference' => 'FITZONE-'.now()->format('YmdHis').'-'.(Auth::id() ?? 'GUEST'),
+                    'reference' => 'Ironside-'.now()->format('YmdHis').'-'.(Auth::id() ?? 'GUEST'),
                     'notes' => $package ? 'M-PESA checkout for '.$package->name : 'Standalone M-PESA payment',
                 ]);
 
@@ -129,7 +129,7 @@ class MpesaController extends Controller
                         'PhoneNumber' => $data['phone'],
                         'CallBackURL' => $callbackUrl,
                         'AccountReference' => $payment->reference,
-                        'TransactionDesc' => 'Fitzone payment',
+                        'TransactionDesc' => 'Ironside payment',
                     ]);
 
                 $body = $response->json();

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Voice Call - Fitzone')
+@section('title', 'Voice Call - Ironside')
 
 @section('content')
 <h1>Voice Call</h1>

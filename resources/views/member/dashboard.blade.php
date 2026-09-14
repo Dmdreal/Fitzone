@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Client Dashboard - Fitzone')
+@section('title', 'Client Dashboard - Ironside')
 
 @section('content')
 @php
     $membership = auth()->user()->memberships()->with(['package', 'trainer'])->latest()->first();
 @endphp
 
-<h1>Welcome to Fitzone</h1>
+<h1>Welcome to Ironside</h1>
 
 <section class="card" style="margin-bottom:16px;display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:center">
     <div>

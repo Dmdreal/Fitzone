@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Café - Fitzone')
+@section('title', 'Café - Ironside')
 
 @section('content')
 <h1>Smart Café</h1>

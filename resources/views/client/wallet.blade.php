@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Wallet - Fitzone')
+@section('title', 'Wallet - Ironside')
 
 @section('content')
 <h1>Wallet</h1>

@@ -285,7 +285,7 @@ class ClientController extends Controller
             'amount' => $amount,
             'method' => $data['method'],
             'status' => 'paid',
-            'reference' => 'FITZONE-'.now()->format('YmdHis').'-'.Auth::id(),
+            'reference' => 'Ironside-'.now()->format('YmdHis').'-'.Auth::id(),
             'paid_at' => now(),
             'notes' => 'Client checkout activation',
         ]);

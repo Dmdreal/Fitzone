@@ -60,8 +60,8 @@ return [
     ],
 
     'bank' => [
-        'name' => env('BANK_NAME', 'Fitzone Gym'),
-        'account_name' => env('BANK_ACCOUNT_NAME', 'Fitzone Gym'),
+        'name' => env('BANK_NAME', 'Ironside'),
+        'account_name' => env('BANK_ACCOUNT_NAME', 'Ironside'),
         'account_number' => env('BANK_ACCOUNT_NUMBER'),
         'paybill' => env('BANK_PAYBILL'),
     ],
@@ -77,9 +77,9 @@ return [
 
     'firebase' => [
         'api_key' => env('FIREBASE_API_KEY', 'AIzaSyCYUQjlgerfGRyYpMMZbX0AOw3zosVGvbQ'),
-        'auth_domain' => env('FIREBASE_AUTH_DOMAIN', 'fitzonewebsite-a8b4b.firebaseapp.com'),
-        'project_id' => env('FIREBASE_PROJECT_ID', 'fitzonewebsite-a8b4b'),
-        'storage_bucket' => env('FIREBASE_STORAGE_BUCKET', 'fitzonewebsite-a8b4b.firebasestorage.app'),
+        'auth_domain' => env('FIREBASE_AUTH_DOMAIN', 'Ironsidewebsite-a8b4b.firebaseapp.com'),
+        'project_id' => env('FIREBASE_PROJECT_ID', 'Ironsidewebsite-a8b4b'),
+        'storage_bucket' => env('FIREBASE_STORAGE_BUCKET', 'Ironsidewebsite-a8b4b.firebasestorage.app'),
         'messaging_sender_id' => env('FIREBASE_MESSAGING_SENDER_ID', '812695645097'),
         'app_id' => env('FIREBASE_APP_ID', '1:812695645097:web:fdc98084386cc8e25af2b8'),
         'measurement_id' => env('FIREBASE_MEASUREMENT_ID', 'G-SKCBEJ1HMT'),

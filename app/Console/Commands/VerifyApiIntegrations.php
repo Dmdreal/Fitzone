@@ -13,7 +13,7 @@ class VerifyApiIntegrations extends Command
 
     public function handle()
     {
-        $this->info('🔍 Verifying Fitzone API Integrations...\n');
+        $this->info('🔍 Verifying Ironside API Integrations...\n');
 
         $results = [
             'google_maps' => $this->checkGoogleMaps(),

@@ -90,7 +90,7 @@ class PaymentApprovalController extends Controller
                 'amount' => $amount,
                 'method' => $data['method'],
                 'status' => 'pending',
-                'reference' => 'FITZONE-PENDING-'.now()->format('YmdHis').'-'.Auth::id(),
+                'reference' => 'Ironside-PENDING-'.now()->format('YmdHis').'-'.Auth::id(),
                 'notes' => $this->paymentNotes($data),
             ]);
         });

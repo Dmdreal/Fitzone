@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Café Orders - Fitzone')
+@section('title', 'Café Orders - Ironside')
 
 @section('content')
 <h1>Café Dashboard</h1>
@@ -66,13 +66,13 @@
 
 <script>
     const pendingCount = {{ $pendingCount }};
-    if (pendingCount > 0 && !sessionStorage.getItem('fitzoneCafeAlerted'+pendingCount)) {
+    if (pendingCount > 0 && !sessionStorage.getItem('IronsideCafeAlerted'+pendingCount)) {
         const audio = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=');
         audio.play().catch(() => {});
         if ('speechSynthesis' in window) {
             speechSynthesis.speak(new SpeechSynthesisUtterance('New cafe order received'));
         }
-        sessionStorage.setItem('fitzoneCafeAlerted'+pendingCount, '1');
+        sessionStorage.setItem('IronsideCafeAlerted'+pendingCount, '1');
     }
     setTimeout(() => window.location.reload(), 15000);
 </script>

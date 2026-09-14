@@ -1,6 +1,6 @@
 @extends('site.layout')
 
-@section('title', 'Memberships & Pricing - Fitzone Gym')
+@section('title', 'Memberships & Pricing - Ironside')
 
 @section('content')
 <header class="page-title">
@@ -239,7 +239,7 @@
 
 <div class="cta-banner">
     <h2>Ready to Start Your Fitness Journey?</h2>
-    <p>Join Fitzone today and get instant access to our gym, trainers, workouts, and supportive community.</p>
+    <p>Join Ironside today and get instant access to our gym, trainers, workouts, and supportive community.</p>
     <div class="hero-actions" style="justify-content: center;">
         <a class="btn" style="background:#fff; color:var(--blue)" href="{{ auth()->check() ? route('client.packages') : route('login') }}">Choose Your Plan</a>
         <a class="btn ghost" style="background:rgba(255,255,255,.2); color:#fff" href="{{ route('site.contact') }}">Ask Questions</a>

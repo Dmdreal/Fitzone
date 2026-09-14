@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Diet Plan - Fitzone')
+@section('title', 'Diet Plan - Ironside')
 
 @section('content')
 <h1>Diet Plan</h1>

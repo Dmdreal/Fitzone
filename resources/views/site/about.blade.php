@@ -1,6 +1,6 @@
 @extends('site.layout')
 
-@section('title', 'About Fitzone - Modern Gym Management')
+@section('title', 'About Ironside - Modern Gym Management')
 
 @section('content')
 <header class="page-title">
@@ -8,7 +8,7 @@
         <source src="https://videos.pexels.com/video-files/5528012/5528012-hd_1080_1920_25fps.mp4" type="video/mp4">
     </video>
     <div class="section-inner">
-        <h1>About Fitzone</h1>
+        <h1>About Ironside</h1>
         <p>A modern gym experience built for members who want training, payments, attendance, nutrition, and communication all in one intelligent platform.</p>
     </div>
 </header>
@@ -18,7 +18,7 @@
         <article class="card">
             <span class="badge green">Our Mission</span>
             <h2>Fitness without operational confusion.</h2>
-            <p class="muted">Fitzone combines a serious training environment with a smart dashboard that keeps members, trainers, and admins perfectly aligned. No hidden payment statuses, no unclear approvals, no lost receipts.</p>
+            <p class="muted">Ironside combines a serious training environment with a smart dashboard that keeps members, trainers, and admins perfectly aligned. No hidden payment statuses, no unclear approvals, no lost receipts.</p>
             <ul class="benefits-list">
                 <li>Clear payment tracking and history</li>
                 <li>Real-time member status updates</li>
@@ -30,7 +30,7 @@
             <img src="https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?auto=format&fit=crop&w=1000&q=80" alt="Gym interior">
             <div>
                 <h3>Designed for Daily Discipline</h3>
-                <p class="muted">From first visit to renewal, Fitzone's system supports the real habits that keep members consistent, motivated, and accountable.</p>
+                <p class="muted">From first visit to renewal, Ironside's system supports the real habits that keep members consistent, motivated, and accountable.</p>
             </div>
         </article>
     </div>
@@ -61,7 +61,7 @@
 
 <section>
     <div class="section-inner">
-        <h2 style="margin-bottom: 40px;">Why Fitzone?</h2>
+        <h2 style="margin-bottom: 40px;">Why Ironside?</h2>
         <div class="grid two">
             <div class="feature-grid">
                 <div class="feature-item">
@@ -152,7 +152,7 @@
 
 <section>
     <div class="section-inner">
-        <h2 style="text-align:center; margin-bottom: 40px;">Meet the Team Behind Fitzone</h2>
+        <h2 style="text-align:center; margin-bottom: 40px;">Meet the Team Behind Ironside</h2>
         <div class="grid three">
             <article class="card" style="text-align:center">
                 <div style="width:80px; height:80px; background:linear-gradient(135deg, var(--blue-deep), var(--blue)); border-radius:50%; margin:0 auto 16px;"></div>
@@ -167,14 +167,14 @@
             <article class="card" style="text-align:center">
                 <div style="width:80px; height:80px; background:linear-gradient(135deg, var(--blue), #3b82f6); border-radius:50%; margin:0 auto 16px;"></div>
                 <h3>Support Heroes</h3>
-                <p class="muted">Customer success team ready to help your gym maximize Fitzone's potential daily.</p>
+                <p class="muted">Customer success team ready to help your gym maximize Ironside's potential daily.</p>
             </article>
         </div>
     </div>
 </section>
 
 <div class="cta-banner">
-    <h2>Join the Fitzone Community Today</h2>
+    <h2>Join the Ironside Community Today</h2>
     <p>Experience the future of gym management with smart memberships, instant payments, and member engagement.</p>
     <div class="hero-actions" style="justify-content: center;">
         <a class="btn" style="background:#fff; color:var(--blue)" href="{{ auth()->check() ? route('client.dashboard') : route('login') }}">Get Started</a>

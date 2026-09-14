@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Checkout - Fitzone')
+@section('title', 'Checkout - Ironside')
 
 @section('content')
 <style>
@@ -178,7 +178,7 @@
                     <label style="align-self:end"><button class="btn" type="submit">Submit Card Payment</button></label>
                 </form>
             </div>
-            <p class="secure-note"><span class="badge green">Secure</span> Full card numbers and CVV are not stored in Fitzone.</p>
+            <p class="secure-note"><span class="badge green">Secure</span> Full card numbers and CVV are not stored in Ironside.</p>
         </article>
 
         <article class="pay-option" data-pay-panel="bank">

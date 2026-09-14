@@ -62,7 +62,7 @@ class MpesaFlowTest extends TestCase
             'amount' => 3000,
             'method' => 'mpesa',
             'status' => 'pending',
-            'reference' => 'FITZONE-123456789-'.$user->id,
+            'reference' => 'Ironside-123456789-'.$user->id,
         ]);
 
         // Update with M-PESA fields
@@ -142,7 +142,7 @@ class MpesaFlowTest extends TestCase
             'amount' => 15000,
             'method' => 'mpesa',
             'status' => 'pending',
-            'reference' => 'FITZONE-987654321-'.$user->id,
+            'reference' => 'Ironside-987654321-'.$user->id,
         ]);
 
         $payment->update([
@@ -216,7 +216,7 @@ class MpesaFlowTest extends TestCase
             'amount' => 500,
             'method' => 'mpesa',
             'status' => 'pending',
-            'reference' => 'FITZONE-FAILED-'.$user->id,
+            'reference' => 'Ironside-FAILED-'.$user->id,
         ]);
 
         $payment->update([

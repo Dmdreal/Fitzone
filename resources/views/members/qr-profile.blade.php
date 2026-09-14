@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $member->name }} - Fitzone Member Card</title>
+    <title>{{ $member->name }} - Ironside Member Card</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -74,7 +74,7 @@
         <section class="hero">
             <div class="avatar">{{ strtoupper(substr($member->name, 0, 1)) }}</div>
             <h1>{{ $member->name }}</h1>
-            <p>{{ $member->member_number }} · Fitzone member profile</p>
+            <p>{{ $member->member_number }} · Ironside member profile</p>
         </section>
 
         <section class="body">

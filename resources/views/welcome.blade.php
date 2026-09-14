@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Fitzone Gym Management - Kenswed</title>
+    <title>Ironside Management - Kenswed</title>
     <style>
         :root {
             --ink: #111827;
@@ -481,7 +481,7 @@
 <body>
     <div class="app">
         <aside class="sidebar">
-            <div class="brand"><span class="brand-mark">G</span><span>GYM<br><small>FITNESS</small></span></div>
+            <div class="brand"><span class="brand-mark">G</span><span>IRONSIDE<br><small>FITNESS</small></span></div>
             @foreach (['Dashboard', 'Users', 'Trainers', 'Members', 'Plans', 'Payments', 'Attendance', 'Workouts', 'Reports', 'Settings'] as $item)
                 <div class="nav-item {{ $loop->first ? 'active' : '' }}"><span>{{ ['⌂','♙','◆','●','▣','₹','◴','☊','▤','⚙'][$loop->index] }}</span>{{ $item }}</div>
             @endforeach

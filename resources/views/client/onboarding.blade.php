@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Get Started - Fitzone')
+@section('title', 'Get Started - Ironside')
 
 @section('content')
-<h1>Welcome to Fitzone!</h1>
+<h1>Welcome to Ironside!</h1>
 
 <section class="card friendly-hero" style="margin-bottom:20px">
     <h2>{{ auth()->user()->name }}, let's get you started</h2>
